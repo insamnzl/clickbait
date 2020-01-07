@@ -37,3 +37,8 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+.Rproj.user
+
+# Die erhobenen Daten werden nicht öffentlich auf Github hochgeladen
+data
+
