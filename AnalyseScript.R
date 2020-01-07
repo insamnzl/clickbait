@@ -22,3 +22,6 @@ library(likert)
 filename <- "data/clickbait_daten_test.csv"
 raw <- readSurvey (filename)
 
+raw.short <- raw[,c(-1:-17, -21, -139:-140)]
+
+
