@@ -1,0 +1,102 @@
+---
+title: "Analyse"
+author: "Fabian Comanns, Peter Gödde, Nicole Herbolt, Insa Menzel"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(devtools)
+devtools::install_github("HCIC/r-tools")
+library(tidyverse)
+library(qualtRics)
+library(jmv)
+library(likert)
+library(psych)
+library(sjlabelled)
+```
+
+# Daten laden und bereinigen
+
+```{r}
+filename <- "data/clickbait_daten_test.csv"
+raw <- readSurvey (filename)
+
+raw.short <- raw[,c(-1:-17, -21, -139:-140)]
+```
+
+```{r}
+raw.short$Gender <- as.factor(raw.short$Gender)
+raw.short$Ausbildung <- as.factor(raw.short$Ausbildung)
+raw.short$Age <- as.numeric(raw.short$Age)
+```
+
+
+
+#Faktorenzuweisung
+```{r}
+skala.zutreffen <- c("Trifft überhaupt nicht zu",
+                      "Trifft nicht zu",
+                      "Trifft eher nicht zu",
+                      "Trifft eher zu",
+                      "Trifft zu",
+                      "Trifft voll und ganz zu")
+
+raw.short$BigFive10_1 <- ordered(raw.short$BigFive10_1, levels = skala.zutreffen)
+raw.short$BigFive10_2 <- ordered(raw.short$BigFive10_2, levels = skala.zutreffen)
+raw.short$BigFive10_3 <- ordered(raw.short$BigFive10_3, levels = skala.zutreffen)
+raw.short$BigFive10_4 <- ordered(raw.short$BigFive10_4, levels = skala.zutreffen)
+raw.short$BigFive10_5 <- ordered(raw.short$BigFive10_5, levels = skala.zutreffen)
+raw.short$BigFive10_6 <- ordered(raw.short$BigFive10_6, levels = skala.zutreffen)
+raw.short$BigFive10_7 <- ordered(raw.short$BigFive10_7, levels = skala.zutreffen)
+raw.short$BigFive10_8 <- ordered(raw.short$BigFive10_8, levels = skala.zutreffen)
+raw.short$BigFive10_9 <- ordered(raw.short$BigFive10_9, levels = skala.zutreffen)
+raw.short$BigFive10_10 <- ordered(raw.short$BigFive10_10, levels = skala.zutreffen)
+
+raw.short$InternetSkillScale_1 <-ordered (raw.short$InternetSkillScale_1, levels = skala.zutreffen)
+raw.short$InternetSkillScale_2 <-ordered (raw.short$InternetSkillScale_2, levels = skala.zutreffen)
+raw.short$InternetSkillScale_3 <-ordered (raw.short$InternetSkillScale_3, levels = skala.zutreffen)
+raw.short$InternetSkillScale_4 <-ordered (raw.short$InternetSkillScale_4, levels = skala.zutreffen)
+raw.short$InternetSkillScale_5 <-ordered (raw.short$InternetSkillScale_5, levels = skala.zutreffen)
+raw.short$InternetSkillScale_6 <-ordered (raw.short$InternetSkillScale_6, levels = skala.zutreffen)
+raw.short$InternetSkillScale_7 <-ordered (raw.short$InternetSkillScale_7, levels = skala.zutreffen)
+raw.short$InternetSkillScale_8 <-ordered (raw.short$InternetSkillScale_8, levels = skala.zutreffen)
+```
+
+
+#Faktorenberechnung
+
+```{r bfi_10, skillscale}
+raw.short %>% select(starts_with("BigFive10")) %>%  get_label()
+
+bfi_keys <- list(bfi_o = c("-BigFive10_5", "BigFive10_10"),
+                 bfi_c = c("-BigFive10_3","BigFive10_8"),
+                 bfi_e = c("-BigFive10_1", "BigFive10_6"),
+                 bfi_a = c("BigFive10_2","-BigFive10_7"),
+                 bfi_n = c("-BigFive10_4", "BigFive10_9")
+                 )
+psych::scoreItems(bfi_keys, raw.short, impute = "median", min = 1, max =6)
+
+
+raw.short %>% select(starts_with("InternetSkillScale")) %>%  get_label()
+
+skill_keys <- list(skills = c("InternetSkillScale_1", 
+                              "InternetSkillScale_2", 
+                              "InternetSkillScale_3", 
+                              "InternetSkillScale_4", 
+                              "InternetSkillScale_5", 
+                              "-InternetSkillScale_6", 
+                              "-InternetSkillScale_7", 
+                              "-InternetSkillScale_8"))
+psych::scoreItems(skill_keys, raw.short, impute ="median", min = 1, max = 6)
+
+```
+
+## 
+
+
+```{r pressure, echo=FALSE}
+
+```
+
