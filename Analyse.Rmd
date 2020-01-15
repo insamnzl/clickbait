@@ -20,28 +20,68 @@ library(sjlabelled)
 # Daten laden und bereinigen
 
 ```{r}
-filename <- "data/clickbait_daten_test.csv"
+filename <- "data/clickbaitdata.csv"
 raw <- readSurvey (filename)
+
+raw %>%
+  filter(Status == "IP Address") %>% 
+  filter(Progress == 100) -> raw
 
 raw.short <- raw[,c(-1:-17, -21, -139:-140)]
 ```
 
-```{r}
+```{r, Kategoriale und numerische Variablen}
 raw.short$Gender <- as.factor(raw.short$Gender)
 raw.short$Ausbildung <- as.factor(raw.short$Ausbildung)
 raw.short$Age <- as.numeric(raw.short$Age)
+
+#Schlagzeilen als kategoriale Variablen:
+
+raw.short$Schlagzeile1 <- as.factor(raw.short$Schlagzeile1)
+raw.short$Schlagzeile2 <- as.factor(raw.short$Schlagzeile2)
+raw.short$Schlagzeile3 <- as.factor(raw.short$Schlagzeile3)
+raw.short$Schlagzeile4 <- as.factor(raw.short$Schlagzeile4)
+raw.short$Schlagzeile5 <- as.factor(raw.short$Schlagzeile5)
+raw.short$Schlagzeile6 <- as.factor(raw.short$Schlagzeile6)
+raw.short$Schlagzeile7 <- as.factor(raw.short$Schlagzeile7)
+raw.short$Schlagzeile8 <- as.factor(raw.short$Schlagzeile8)
+raw.short$Schlagzeile9 <- as.factor(raw.short$Schlagzeile9)
+raw.short$Schlagzeile10 <- as.factor(raw.short$Schlagzeile10)
+raw.short$Schlagzeile11 <- as.factor(raw.short$Schlagzeile11)
+raw.short$Schlagzeile12 <- as.factor(raw.short$Schlagzeile12)
 ```
 
 
 
-#Faktorenzuweisung
-```{r}
+#Skalenbenennung
+```{r, Skalenbenennung}
 skala.zutreffen <- c("Trifft überhaupt nicht zu",
                       "Trifft nicht zu",
                       "Trifft eher nicht zu",
                       "Trifft eher zu",
                       "Trifft zu",
                       "Trifft voll und ganz zu")
+
+skala.education <- c("Kein Abschluss",
+                     "Hauptschulabschluss",
+                     "Realschulabschluss/Mittlere Reife",
+                     "Fachabitur/Abitur",
+                     "Berufsausbildung",
+                     "Studienabschluss (Bachelor, Master, Magister, Diplom, Promotion, etc.")
+
+skala.semdiff <- c("1",
+                   "2",
+                   "3",
+                   "4",
+                   "5")
+
+
+```
+
+#Skalenberechnung
+```{r, Skalenberechnung}
+
+raw.short$Ausbildung <- ordered(raw.short$Ausbildung, levels = skala.education)
 
 raw.short$BigFive10_1 <- ordered(raw.short$BigFive10_1, levels = skala.zutreffen)
 raw.short$BigFive10_2 <- ordered(raw.short$BigFive10_2, levels = skala.zutreffen)
@@ -62,6 +102,102 @@ raw.short$InternetSkillScale_5 <-ordered (raw.short$InternetSkillScale_5, levels
 raw.short$InternetSkillScale_6 <-ordered (raw.short$InternetSkillScale_6, levels = skala.zutreffen)
 raw.short$InternetSkillScale_7 <-ordered (raw.short$InternetSkillScale_7, levels = skala.zutreffen)
 raw.short$InternetSkillScale_8 <-ordered (raw.short$InternetSkillScale_8, levels = skala.zutreffen)
+
+raw.short$Schlagzeile1SemDiff_1 <- ordered (raw.short$Schlagzeile1SemDiff_1, levels = skala.semdiff)
+raw.short$Schlagzeile1SemDiff_2 <- ordered (raw.short$Schlagzeile1SemDiff_2, levels = skala.semdiff)
+raw.short$Schlagzeile1SemDiff_3 <- ordered (raw.short$Schlagzeile1SemDiff_3, levels = skala.semdiff)
+raw.short$Schlagzeile1SemDiff_4 <- ordered (raw.short$Schlagzeile1SemDiff_4, levels = skala.semdiff)
+raw.short$Schlagzeile1SemDiff_5 <- ordered (raw.short$Schlagzeile1SemDiff_5, levels = skala.semdiff)
+raw.short$Schlagzeile1SemDiff_6 <- ordered (raw.short$Schlagzeile1SemDiff_6, levels = skala.semdiff)
+raw.short$Schlagzeile1SemDiff_7 <- ordered (raw.short$Schlagzeile1SemDiff_7, levels = skala.semdiff)
+
+raw.short$Schlagzeile2SemDiff_1 <- ordered (raw.short$Schlagzeile2SemDiff_1, levels = skala.semdiff)
+raw.short$Schlagzeile2SemDiff_2 <- ordered (raw.short$Schlagzeile2SemDiff_2, levels = skala.semdiff)
+raw.short$Schlagzeile2SemDiff_3 <- ordered (raw.short$Schlagzeile2SemDiff_3, levels = skala.semdiff)
+raw.short$Schlagzeile2SemDiff_4 <- ordered (raw.short$Schlagzeile2SemDiff_4, levels = skala.semdiff)
+raw.short$Schlagzeile2SemDiff_5 <- ordered (raw.short$Schlagzeile2SemDiff_5, levels = skala.semdiff)
+raw.short$Schlagzeile2SemDiff_6 <- ordered (raw.short$Schlagzeile2SemDiff_6, levels = skala.semdiff)
+raw.short$Schlagzeile2SemDiff_7 <- ordered (raw.short$Schlagzeile2SemDiff_7, levels = skala.semdiff)
+
+raw.short$Schlagzeile3SemDiff_1 <- ordered (raw.short$Schlagzeile3SemDiff_1, levels = skala.semdiff)
+raw.short$Schlagzeile3SemDiff_2 <- ordered (raw.short$Schlagzeile3SemDiff_2, levels = skala.semdiff)
+raw.short$Schlagzeile3SemDiff_3 <- ordered (raw.short$Schlagzeile3SemDiff_3, levels = skala.semdiff)
+raw.short$Schlagzeile3SemDiff_4 <- ordered (raw.short$Schlagzeile3SemDiff_4, levels = skala.semdiff)
+raw.short$Schlagzeile3SemDiff_5 <- ordered (raw.short$Schlagzeile3SemDiff_5, levels = skala.semdiff)
+raw.short$Schlagzeile3SemDiff_6 <- ordered (raw.short$Schlagzeile3SemDiff_6, levels = skala.semdiff)
+raw.short$Schlagzeile3SemDiff_7 <- ordered (raw.short$Schlagzeile3SemDiff_7, levels = skala.semdiff)
+
+raw.short$Schlagzeile4SemDiff_1 <- ordered (raw.short$Schlagzeile4SemDiff_1, levels = skala.semdiff)
+raw.short$Schlagzeile4SemDiff_2 <- ordered (raw.short$Schlagzeile4SemDiff_2, levels = skala.semdiff)
+raw.short$Schlagzeile4SemDiff_3 <- ordered (raw.short$Schlagzeile4SemDiff_3, levels = skala.semdiff)
+raw.short$Schlagzeile4SemDiff_4 <- ordered (raw.short$Schlagzeile4SemDiff_4, levels = skala.semdiff)
+raw.short$Schlagzeile4SemDiff_5 <- ordered (raw.short$Schlagzeile4SemDiff_5, levels = skala.semdiff)
+raw.short$Schlagzeile4SemDiff_6 <- ordered (raw.short$Schlagzeile4SemDiff_6, levels = skala.semdiff)
+raw.short$Schlagzeile4SemDiff_7 <- ordered (raw.short$Schlagzeile4SemDiff_7, levels = skala.semdiff)
+
+raw.short$Schlagzeile5SemDiff_1 <- ordered (raw.short$Schlagzeile5SemDiff_1, levels = skala.semdiff)
+raw.short$Schlagzeile5SemDiff_2 <- ordered (raw.short$Schlagzeile5SemDiff_2, levels = skala.semdiff)
+raw.short$Schlagzeile5SemDiff_3 <- ordered (raw.short$Schlagzeile5SemDiff_3, levels = skala.semdiff)
+raw.short$Schlagzeile5SemDiff_4 <- ordered (raw.short$Schlagzeile5SemDiff_4, levels = skala.semdiff)
+raw.short$Schlagzeile5SemDiff_5 <- ordered (raw.short$Schlagzeile5SemDiff_5, levels = skala.semdiff)
+raw.short$Schlagzeile5SemDiff_6 <- ordered (raw.short$Schlagzeile5SemDiff_6, levels = skala.semdiff)
+raw.short$Schlagzeile5SemDiff_7 <- ordered (raw.short$Schlagzeile5SemDiff_7, levels = skala.semdiff)
+
+raw.short$Schlagzeile6SemDiff_1 <- ordered (raw.short$Schlagzeile6SemDiff_1, levels = skala.semdiff)
+raw.short$Schlagzeile6SemDiff_2 <- ordered (raw.short$Schlagzeile6SemDiff_2, levels = skala.semdiff)
+raw.short$Schlagzeile6SemDiff_3 <- ordered (raw.short$Schlagzeile6SemDiff_3, levels = skala.semdiff)
+raw.short$Schlagzeile6SemDiff_4 <- ordered (raw.short$Schlagzeile6SemDiff_4, levels = skala.semdiff)
+raw.short$Schlagzeile6SemDiff_5 <- ordered (raw.short$Schlagzeile6SemDiff_5, levels = skala.semdiff)
+raw.short$Schlagzeile6SemDiff_6 <- ordered (raw.short$Schlagzeile6SemDiff_6, levels = skala.semdiff)
+raw.short$Schlagzeile6SemDiff_7 <- ordered (raw.short$Schlagzeile6SemDiff_7, levels = skala.semdiff)
+
+raw.short$Schlagzeile7SemDiff_1 <- ordered (raw.short$Schlagzeile7SemDiff_1, levels = skala.semdiff)
+raw.short$Schlagzeile7SemDiff_2 <- ordered (raw.short$Schlagzeile7SemDiff_2, levels = skala.semdiff)
+raw.short$Schlagzeile7SemDiff_3 <- ordered (raw.short$Schlagzeile7SemDiff_3, levels = skala.semdiff)
+raw.short$Schlagzeile7SemDiff_4 <- ordered (raw.short$Schlagzeile7SemDiff_4, levels = skala.semdiff)
+raw.short$Schlagzeile7SemDiff_5 <- ordered (raw.short$Schlagzeile7SemDiff_5, levels = skala.semdiff)
+raw.short$Schlagzeile7SemDiff_6 <- ordered (raw.short$Schlagzeile7SemDiff_6, levels = skala.semdiff)
+raw.short$Schlagzeile7SemDiff_7 <- ordered (raw.short$Schlagzeile7SemDiff_7, levels = skala.semdiff)
+
+raw.short$Schlagzeile8SemDiff_1 <- ordered (raw.short$Schlagzeile8SemDiff_1, levels = skala.semdiff)
+raw.short$Schlagzeile8SemDiff_2 <- ordered (raw.short$Schlagzeile8SemDiff_2, levels = skala.semdiff)
+raw.short$Schlagzeile8SemDiff_3 <- ordered (raw.short$Schlagzeile8SemDiff_3, levels = skala.semdiff)
+raw.short$Schlagzeile8SemDiff_4 <- ordered (raw.short$Schlagzeile8SemDiff_4, levels = skala.semdiff)
+raw.short$Schlagzeile8SemDiff_5 <- ordered (raw.short$Schlagzeile8SemDiff_5, levels = skala.semdiff)
+raw.short$Schlagzeile8SemDiff_6 <- ordered (raw.short$Schlagzeile8SemDiff_6, levels = skala.semdiff)
+raw.short$Schlagzeile8SemDiff_7 <- ordered (raw.short$Schlagzeile8SemDiff_7, levels = skala.semdiff)
+
+raw.short$Schlagzeile9SemDiff_1 <- ordered (raw.short$Schlagzeile9SemDiff_1, levels = skala.semdiff)
+raw.short$Schlagzeile9SemDiff_2 <- ordered (raw.short$Schlagzeile9SemDiff_2, levels = skala.semdiff)
+raw.short$Schlagzeile9SemDiff_3 <- ordered (raw.short$Schlagzeile9SemDiff_3, levels = skala.semdiff)
+raw.short$Schlagzeile9SemDiff_4 <- ordered (raw.short$Schlagzeile9SemDiff_4, levels = skala.semdiff)
+raw.short$Schlagzeile9SemDiff_5 <- ordered (raw.short$Schlagzeile9SemDiff_5, levels = skala.semdiff)
+raw.short$Schlagzeile9SemDiff_6 <- ordered (raw.short$Schlagzeile9SemDiff_6, levels = skala.semdiff)
+raw.short$Schlagzeile9SemDiff_7 <- ordered (raw.short$Schlagzeile9SemDiff_7, levels = skala.semdiff)
+
+raw.short$Schlagzeile10SemDiff_1 <- ordered (raw.short$Schlagzeile10SemDiff_1, levels = skala.semdiff)
+raw.short$Schlagzeile10SemDiff_2 <- ordered (raw.short$Schlagzeile10SemDiff_2, levels = skala.semdiff)
+raw.short$Schlagzeile10SemDiff_3 <- ordered (raw.short$Schlagzeile10SemDiff_3, levels = skala.semdiff)
+raw.short$Schlagzeile10SemDiff_4 <- ordered (raw.short$Schlagzeile10SemDiff_4, levels = skala.semdiff)
+raw.short$Schlagzeile10SemDiff_5 <- ordered (raw.short$Schlagzeile10SemDiff_5, levels = skala.semdiff)
+raw.short$Schlagzeile10SemDiff_6 <- ordered (raw.short$Schlagzeile10SemDiff_6, levels = skala.semdiff)
+raw.short$Schlagzeile10SemDiff_7 <- ordered (raw.short$Schlagzeile10SemDiff_7, levels = skala.semdiff)
+
+raw.short$Schlagzeile11SemDiff_1 <- ordered (raw.short$Schlagzeile11SemDiff_1, levels = skala.semdiff)
+raw.short$Schlagzeile11SemDiff_2 <- ordered (raw.short$Schlagzeile11SemDiff_2, levels = skala.semdiff)
+raw.short$Schlagzeile11SemDiff_3 <- ordered (raw.short$Schlagzeile11SemDiff_3, levels = skala.semdiff)
+raw.short$Schlagzeile11SemDiff_4 <- ordered (raw.short$Schlagzeile11SemDiff_4, levels = skala.semdiff)
+raw.short$Schlagzeile11SemDiff_5 <- ordered (raw.short$Schlagzeile11SemDiff_5, levels = skala.semdiff)
+raw.short$Schlagzeile11SemDiff_6 <- ordered (raw.short$Schlagzeile11SemDiff_6, levels = skala.semdiff)
+raw.short$Schlagzeile11SemDiff_7 <- ordered (raw.short$Schlagzeile11SemDiff_7, levels = skala.semdiff)
+
+raw.short$Schlagzeile12SemDiff_1 <- ordered (raw.short$Schlagzeile12SemDiff_1, levels = skala.semdiff)
+raw.short$Schlagzeile12SemDiff_2 <- ordered (raw.short$Schlagzeile12SemDiff_2, levels = skala.semdiff)
+raw.short$Schlagzeile12SemDiff_3 <- ordered (raw.short$Schlagzeile12SemDiff_3, levels = skala.semdiff)
+raw.short$Schlagzeile12SemDiff_4 <- ordered (raw.short$Schlagzeile12SemDiff_4, levels = skala.semdiff)
+raw.short$Schlagzeile12SemDiff_5 <- ordered (raw.short$Schlagzeile12SemDiff_5, levels = skala.semdiff)
+raw.short$Schlagzeile12SemDiff_6 <- ordered (raw.short$Schlagzeile12SemDiff_6, levels = skala.semdiff)
+raw.short$Schlagzeile12SemDiff_7 <- ordered (raw.short$Schlagzeile12SemDiff_7, levels = skala.semdiff)
 ```
 
 
@@ -89,7 +225,25 @@ skill_keys <- list(skills = c("InternetSkillScale_1",
                               "-InternetSkillScale_6", 
                               "-InternetSkillScale_7", 
                               "-InternetSkillScale_8"))
+
 psych::scoreItems(skill_keys, raw.short, impute ="median", min = 1, max = 6)
+
+
+headline_keys <- list( head_1 = c("Schlagzeile1SemDiff_1", "Schlagzeile1SemDiff_2", "Schlagzeile1SemDiff_3", "Schlagzeile1SemDiff_4", "Schlagzeile1SemDiff_5", "Schlagzeile1SemDiff_6", "Schlagzeile1SemDiff_7"),
+                       head_2 = c("Schlagzeile2SemDiff_1", "Schlagzeile2SemDiff_2", "Schlagzeile2SemDiff_3", "Schlagzeile2SemDiff_4", "Schlagzeile2SemDiff_5", "Schlagzeile2SemDiff_6", "Schlagzeile2SemDiff_7"),
+                       head_3 = c("Schlagzeile3SemDiff_1", "Schlagzeile3SemDiff_2", "Schlagzeile3SemDiff_3", "Schlagzeile3SemDiff_4", "Schlagzeile3SemDiff_5", "Schlagzeile3SemDiff_6", "Schlagzeile3SemDiff_7"),
+                       head_4 = c("Schlagzeile4SemDiff_1", "Schlagzeile4SemDiff_2", "Schlagzeile4SemDiff_3", "Schlagzeile4SemDiff_4", "Schlagzeile4SemDiff_5", "Schlagzeile4SemDiff_6", "Schlagzeile4SemDiff_7"),
+                       head_5 =c("Schlagzeile5SemDiff_1", "Schlagzeile5SemDiff_2", "Schlagzeile5SemDiff_3", "Schlagzeile5SemDiff_4", "Schlagzeile5SemDiff_5", "Schlagzeile5SemDiff_6", "Schlagzeile5SemDiff_7"),
+                       head_6 = c("Schlagzeile6SemDiff_1", "Schlagzeile6SemDiff_2", "Schlagzeile6SemDiff_3", "Schlagzeile6SemDiff_4", "Schlagzeile6SemDiff_5", "Schlagzeile6SemDiff_6", "Schlagzeile6SemDiff_7"),
+                       head_7 = c("Schlagzeile7SemDiff_1", "Schlagzeile7SemDiff_2", "Schlagzeile7SemDiff_3", "Schlagzeile7SemDiff_4", "Schlagzeile7SemDiff_5", "Schlagzeile7SemDiff_6", "Schlagzeile7SemDiff_7"),
+                       head_8 = c("Schlagzeile8SemDiff_1", "Schlagzeile8SemDiff_2", "Schlagzeile8SemDiff_3", "Schlagzeile8SemDiff_4", "Schlagzeile8SemDiff_5", "Schlagzeile8SemDiff_6", "Schlagzeile8SemDiff_7"),
+                       head_9 = c("Schlagzeile9SemDiff_1", "Schlagzeile9SemDiff_2", "Schlagzeile9SemDiff_3", "Schlagzeile9SemDiff_4", "Schlagzeile9SemDiff_5", "Schlagzeile9SemDiff_6", "Schlagzeile9SemDiff_7"),
+                       head_10 = c("Schlagzeile10SemDiff_1", "Schlagzeile10SemDiff_2", "Schlagzeile10SemDiff_3", "Schlagzeile10SemDiff_4", "Schlagzeile10SemDiff_5", "Schlagzeile10SemDiff_6", "Schlagzeile10SemDiff_7"),
+                       head_11 = c("Schlagzeile11SemDiff_1", "Schlagzeile11SemDiff_2", "Schlagzeile11SemDiff_3", "Schlagzeile11SemDiff_4", "Schlagzeile11SemDiff_5", "Schlagzeile11SemDiff_6", "Schlagzeile11SemDiff_7"),
+                       head_12 = c("Schlagzeile12SemDiff_1", "Schlagzeile12SemDiff_2", "Schlagzeile12SemDiff_3", "Schlagzeile12SemDiff_4", "Schlagzeile12SemDiff_5", "Schlagzeile12SemDiff_6", "Schlagzeile12SemDiff_7"))
+
+
+psych::scoreItems(headline_keys, raw.short, impute = "median", min = 1, max = 5)
 
 ```
 
