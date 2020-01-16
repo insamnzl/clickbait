@@ -6,6 +6,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+install.packages("datapasta")
 
 library(devtools)
 devtools::install_github("HCIC/r-tools")
@@ -15,6 +16,7 @@ library(jmv)
 library(likert)
 library(psych)
 library(sjlabelled)
+library(datapasta)
 ```
 
 # Daten laden und bereinigen
@@ -28,6 +30,10 @@ raw %>%
   filter(Progress == 100) -> raw
 
 raw.short <- raw[,c(-1:-17, -21, -139:-140)]
+
+raw.head <- raw.short[,c(-1:-22, -119:-120)]
+
+write.csv2(raw.head, "data/raw.head.csv")
 ```
 
 ```{r, Kategoriale und numerische Variablen}
@@ -204,14 +210,14 @@ raw.short$Schlagzeile12SemDiff_7 <- ordered (raw.short$Schlagzeile12SemDiff_7, l
 #Faktorenberechnung
 
 ```{r bfi_10, skillscale}
-raw.short %>% select(starts_with("BigFive10")) %>%  get_label()
+raw.short %>% select(starts_with("BigFive10", "InternetSkillScale")) %>%  get_label()
 
 bfi_keys <- list(bfi_o = c("-BigFive10_5", "BigFive10_10"),
                  bfi_c = c("-BigFive10_3","BigFive10_8"),
                  bfi_e = c("-BigFive10_1", "BigFive10_6"),
                  bfi_a = c("BigFive10_2","-BigFive10_7"),
-                 bfi_n = c("-BigFive10_4", "BigFive10_9")
-                 )
+                 bfi_n = c("-BigFive10_4", "BigFive10_9"))
+
 psych::scoreItems(bfi_keys, raw.short, impute = "median", min = 1, max =6)
 
 
@@ -245,6 +251,15 @@ headline_keys <- list( head_1 = c("Schlagzeile1SemDiff_1", "Schlagzeile1SemDiff_
 
 psych::scoreItems(headline_keys, raw.short, impute = "median", min = 1, max = 5)
 
+```
+```{r, Test Pivotisieren und semantisches Differenzial}
+df <- tibble::tribble(
+ )
+
+
+```
+```{r, gathering}
+df %>% pivot_longer(cols = c(Schlagzeile1, Schlagzeile2, Schlagzeile3, Schlagzeile4, Schlagzeile5, Schlagzeile6, Schlagzeile7, Schlagzeile8, Schlagzeile9, Schlagzeile10, Schlagzeile11, Schlagzeile12))
 ```
 
 ## 
