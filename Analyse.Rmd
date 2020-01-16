@@ -6,10 +6,10 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-install.packages("datapasta")
+#install.packages("datapasta")
 
 library(devtools)
-devtools::install_github("HCIC/r-tools")
+#devtools::install_github("HCIC/r-tools")
 library(tidyverse)
 library(qualtRics)
 library(jmv)
@@ -33,7 +33,7 @@ raw.short <- raw[,c(-1:-17, -21, -139:-140)]
 
 raw.head <- raw.short[,c(-1:-22, -119:-120)]
 
-write.csv2(raw.head, "data/raw.head.csv")
+#write.csv2(raw.head, "data/raw.head.csv")
 ```
 
 ```{r, Kategoriale und numerische Variablen}
@@ -55,8 +55,40 @@ raw.short$Schlagzeile9 <- as.factor(raw.short$Schlagzeile9)
 raw.short$Schlagzeile10 <- as.factor(raw.short$Schlagzeile10)
 raw.short$Schlagzeile11 <- as.factor(raw.short$Schlagzeile11)
 raw.short$Schlagzeile12 <- as.factor(raw.short$Schlagzeile12)
+
+
 ```
 
+```{r, Mapping}
+#Schlagzeile1
+mapping <- c("Die EU-Kommission möchte das Ziel der Klimaneutralität bis 2050 gesetzlich festschreiben. Für Gebiete, die besonders von dem damit einhergehenden Strukturwandel betroffen wären, soll ein Übergangsfonds in zweistelliger Milliardenhöhe geschaffen werden."= 1, "Um das Ziel der Klimaneutralität bis 2050 erreichen zu können, hat die EU-Komissionen einen Übergangsfonds für Gebiete gefordert, die von dem Strukturwandel betroffen wären. Die Forderung wurde abgelehnt."= 0, "Die EU-Kommission hat beschlossen: Um die Klimaneutralität bis 2050 zu erreichen, werden alle Gebiete ab Januar 2020 mit einem Zuschuss von 1 Million Euro unterstützt. Das ist seit kurzem rechtlich geregelt."= 0)
+
+raw.short$head_1 <- mapping[as.character(raw.short$Schlagzeile1)]
+
+#Schlagzeile2
+mapping <- 
+  
+  
+#Schlagzeile3
+  
+#Schlagzeile4
+  
+#Schlagzeile5
+  
+#Schlagzeile6
+  
+#Schlagzeile7
+
+#Schlagzeile8
+
+#Schlagzeile9
+
+#Schlagzeile10
+
+#Schlagzeile11
+
+#Schlagzeile12
+```
 
 
 #Skalenbenennung
@@ -210,7 +242,7 @@ raw.short$Schlagzeile12SemDiff_7 <- ordered (raw.short$Schlagzeile12SemDiff_7, l
 #Faktorenberechnung
 
 ```{r bfi_10, skillscale}
-raw.short %>% select(starts_with("BigFive10", "InternetSkillScale")) %>%  get_label()
+raw.short %>% select(starts_with("BigFive10")) %>%  get_label()
 
 bfi_keys <- list(bfi_o = c("-BigFive10_5", "BigFive10_10"),
                  bfi_c = c("-BigFive10_3","BigFive10_8"),
@@ -252,9 +284,10 @@ headline_keys <- list( head_1 = c("Schlagzeile1SemDiff_1", "Schlagzeile1SemDiff_
 psych::scoreItems(headline_keys, raw.short, impute = "median", min = 1, max = 5)
 
 ```
+
+
 ```{r, Test Pivotisieren und semantisches Differenzial}
-df <- tibble::tribble(
- )
+df <- 
 
 
 ```
