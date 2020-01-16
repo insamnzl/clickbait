@@ -1898,11 +1898,6 @@ df12 <- tibble::tribble(
 
 ```{r, Test Pivotisieren und semantisches Differenzial}
 
-
-
-df <- 
-
-
 ```
 ```{r, gathering}
 raw.short %>% select(starts_with("head_")) %>% 
