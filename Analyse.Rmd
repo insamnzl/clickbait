@@ -339,7 +339,8 @@ df <-
 
 ```
 ```{r, gathering}
-df %>% pivot_longer(cols = c(Schlagzeile1, Schlagzeile2, Schlagzeile3, Schlagzeile4, Schlagzeile5, Schlagzeile6, Schlagzeile7, Schlagzeile8, Schlagzeile9, Schlagzeile10, Schlagzeile11, Schlagzeile12))
+raw.short %>% select(starts_with("head_")) %>% 
+  pivot_longer(cols = c(head_1, head_2, head_3, head_4, head_5, head_6, head_7, head_8, head_9, head_10, head_11, head_12))
 ```
 
 ## 
