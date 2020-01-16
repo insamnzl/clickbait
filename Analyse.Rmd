@@ -112,7 +112,7 @@ raw.short$head_8 <- mapping[as.character(raw.short$Schlagzeile8)]
 
 #Schlagzeile9
 
-mapping <- c("Der YouTuber Rezo hat mit seinem Video "Die Zerstörung der CDU" dazu beigetragen, die deutschen Jugendlichen mehr für Politik zu interessieren. Die deutschen Jugendlichen selbst bezeichnen es als ein sehr erfolgreiches Video."= 0, "Laut einer Umfrage der Plattform YouTube erinnern sich 90% der Jugendlichen zwischen 12 und 20 Jahren am besten an das Video "Die Zerstörung der CDU" von dem deutschen YouTuber Rezo. Die Anzahl der Aufrufe besagt allerdings, dass sich Rezo mit seinem Video nur auf Platz 5 der erfolgreichsten Videos in Deutschland befindet."= 0, "Der YouTuber Rezo führt mit seinem Video "Die Zerstörung der CDU" das Ranking der erfolgreichsten Videos des Jahres in Deutschland an. Mit mehr als 16 Millionen Aufrufen ist er auf Platz 1."= 1)
+mapping <- c("Der YouTuber Rezo hat mit seinem Video \"Die Zerstörung der CDU\" dazu beigetragen, die deutschen Jugendlichen mehr für Politik zu interessieren. Die deutschen Jugendlichen selbst bezeichnen es als ein sehr erfolgreiches Video." = 0, "Laut einer Umfrage der Plattform YouTube erinnern sich 90% der Jugendlichen zwischen 12 und 20 Jahren am besten an das Video \"Die Zerstörung der CDU\" von dem deutschen YouTuber Rezo. Die Anzahl der Aufrufe besagt allerdings, dass sich Rezo mit seinem Video nur auf Platz 5 der erfolgreichsten Videos in Deutschland befindet."= 0, "Der YouTuber Rezo führt mit seinem Video \"Die Zerstörung der CDU\" das Ranking der erfolgreichsten Videos des Jahres in Deutschland an. Mit mehr als 16 Millionen Aufrufen ist er auf Platz 1."= 1)
 
 raw.short$head_9 <- mapping[as.character(raw.short$Schlagzeile9)]
 
