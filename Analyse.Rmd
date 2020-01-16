@@ -16,7 +16,7 @@ library(jmv)
 library(likert)
 library(psych)
 library(sjlabelled)
-library(datapasta)
+library(datapasta) 
 ```
 
 # Daten laden und bereinigen
@@ -66,28 +66,75 @@ mapping <- c("Die EU-Kommission möchte das Ziel der Klimaneutralität bis 2050 
 raw.short$head_1 <- mapping[as.character(raw.short$Schlagzeile1)]
 
 #Schlagzeile2
-mapping <- 
+mapping <- c("Bill Gates forscht mit seinem Konzern Microsoft an einer effizienteren Methode der Energie Speicherung."= 0, "Bill Gates hat ein amerikanisches Unternehmen aufgekauft, das an neuartigen Brennstoffzellen forscht."= 0, "Bill Gates erwartet in den nächsten 15 Jahren eine technische Alternative zu herkömmlichen Antriebstechnologien." = 1)
   
-  
+raw.short$head_2 <- mapping[as.character(raw.short$Schlagzeile2)]
+
 #Schlagzeile3
+
+mapping <- c("Nach drei Tagen in Polizeigewahrsam verstirbt ein 37-Jähriger auf der Wache. Dieser hatte zuvor in betrunkenem Zustand einen Polizeibeamten mit einem Messer angegriffen. Die zwei involvierten Polizeibeamten konnten die Gewalttat verhindern und den Angreifer in Gewahrsam nehmen."= 0, "Nach einem Familiendrama in Schleswig-Holstein wurde ein 25-Jähriger festgenommen, weil er seiner Mutter gegenüber gewalttätig geworden sein soll. Nach drei Tagen in Polizeigewahrsam verstarb der junge Mann, der unter einer Herzschwäche litt."= 0, "Ein betrunkener Ladendieb (37) wurde nach auffälligem Verhalten von Polizeibeamten mit auf das Revier genommen. Kaum dort angekommen verschlechterte sich der gesundheitliche Zustand des Festgenommenen. Er musste ins Krankenhaus gebracht werden und verstarb dort drei Tage später."= 1)
+
+raw.short$head_3 <- mapping[as.character(raw.short$Schlagzeile3)]
+
   
 #Schlagzeile4
+
+mapping <- c("Der Rechtsausschuss des Bundestags hat dem Vorsitzenden Stephan Brandner eine letzte Abmahnung erteilt. Sollte der AfD-Abgeordnete sich noch einen weiteren Fehltritt erlauben durch unangebrachte Twitter-Posts oder radikale Kommentare, wird er als Vorsitzender abgewählt."= 0, "Der Rechtsausschuss des Bundestages hat den AfD-Abgeordneten Stephan Brandner als Vorsitzenden abgewählt. Dabei handelt es sich um einen einmaligen Vorfall in der 70-jährigen Geschichte des Parlaments." = 1, "Der AfD-Politiker Stephan Brandner soll als Rechtsausschuss-Vorsitzender abgewählt werden. Da dies in der 70-jährigen Geschichte des Parlaments noch nie geschehen ist, wird nun geprüft, ob das Abwählen des Vorsitzenden möglich ist." =0 )
+
+raw.short$head_4 <- mapping[as.character(raw.short$Schlagzeile4)]
+
   
 #Schlagzeile5
+
+mapping <- c("Daniela Katzenberger verkündet ihre Schwangerschaft."= 0, "Daniela Katzenberger präsentiert sich mit einer Baby-Puppe."= 1, "Daniela Katzenberger stellt ihre eigene Baby-Mode-Kollektion vor."= 0)
+
+raw.short$head_5 <- mapping[as.character(raw.short$Schlagzeile5)]
+
   
 #Schlagzeile6
+
+mapping <- c("Gerüchten zufolge haben sich die TV-Moderatorin Anne Will und die Kommunikationswissenschaftlerin Miriam Meckel getrennt. Das Paar hat bekannt gegeben, dass es sich dabei um falsche Informationen handelt. Sie sind weiterhin glücklich verheiratet."= 0, "Gerüchten zufolge haben sich die TV-Moderatorin Anne Will und die Kommunikationswissenschaftlerin Miriam Meckel getrennt. Dieses Gerücht ist schon häufiger in den Nachrichten gewesen, wurde jedoch immer widerlegt. Das Paar schweigt zu diesen Vermutungen."= 0, "TV-Moderatorin Anne Will und Kommunikationswissenschaftlerin Miriam Meckel haben ihre Trennung verkündet. Die beiden galten als prominentes lesbisches Paar." =1)
+
+raw.short$head_6 <- mapping[as.character(raw.short$Schlagzeile6)]
+
   
 #Schlagzeile7
 
+mapping <- c("Bundestag stimmt über ein größeres Budget für Dienstwagen von Regierungspolitikern."= 0, "Kein Dienstwagen der Regierungspolitiker in Bund und Ländern hält die EU-Grenzwerte ein."= 1, "Regierungspolitiker nutzen Ihre Dienstwagen hauptsächlich für private Zwecke."= 0)
+
+raw.short$head_7 <- mapping[as.character(raw.short$Schlagzeile7)]
+
 #Schlagzeile8
+
+mapping <- c("Die Bundesregierung testet Standorte, um bemannte Raketen ins Weltall schicken zu können."= 0, "Die Bundesregierung testet Standorte, von denen kleine Trägerraketen kleine Satelliten ins All schicken können."= 1, "In Deutschland soll ein vergleichbarer Weltraumbahnhof wie „Cape Canaveral“ in Florida gebaut werden."= 0)
+
+raw.short$head_8 <- mapping[as.character(raw.short$Schlagzeile8)]
 
 #Schlagzeile9
 
+mapping <- c("Der YouTuber Rezo hat mit seinem Video "Die Zerstörung der CDU" dazu beigetragen, die deutschen Jugendlichen mehr für Politik zu interessieren. Die deutschen Jugendlichen selbst bezeichnen es als ein sehr erfolgreiches Video."= 0, "Laut einer Umfrage der Plattform YouTube erinnern sich 90% der Jugendlichen zwischen 12 und 20 Jahren am besten an das Video "Die Zerstörung der CDU" von dem deutschen YouTuber Rezo. Die Anzahl der Aufrufe besagt allerdings, dass sich Rezo mit seinem Video nur auf Platz 5 der erfolgreichsten Videos in Deutschland befindet."= 0, "Der YouTuber Rezo führt mit seinem Video "Die Zerstörung der CDU" das Ranking der erfolgreichsten Videos des Jahres in Deutschland an. Mit mehr als 16 Millionen Aufrufen ist er auf Platz 1."= 1)
+
+raw.short$head_9 <- mapping[as.character(raw.short$Schlagzeile9)]
+
+
 #Schlagzeile10
+
+mapping <- c("Überraschung bei der TV-Show “Adventsfest”: Florian Silbereisen stellt seine neue Lebensgefährtin Diana vor - und bittet sie vor laufenden Kameras, seine Frau zu werden."= 0, "Während einer von Florian Silbereisen moderierten Sendung bittet der Trompeter Stefan Mross seine Freundin Anna-Carina Woitschak, seine Frau zu werden."= 1, "Florian Silbereisen legt eine Show-Einlage ein: Im Zuge seiner Moderation des “Adventsfests” geht er auf Knie und bittet eine Promi-Dame um ihre Hand - und zwar Uschi Glas! Im Nachhinein wurde aufgelöst, dass der Antrag nur Teil der Show war."=0)
+
+raw.short$head_10 <- mapping[as.character(raw.short$Schlagzeile10)]
 
 #Schlagzeile11
 
+mapping <- c("Aufgrund von Datenschutzbestimmungen, werden die Social-Media Plattformen im Jahr 2020 vom deutschen Markt genommen."= 0, "Ein Landesgericht in Deutschland erkennt Patentverstöße von Facebook und Whatsapp gegenüber BlackBerry an."= 1, "Die nicht erfüllten Auflagen, zur Kontrolle von Hasskommentaren im Netz, führen zu einer vorübergehenden Sperrung von Facebook, wenn diese nicht innerhalb der nächste 4 Monate erfüllt werden."= 0 )
+
+raw.short$head_11 <- mapping[as.character(raw.short$Schlagzeile11)]
+
 #Schlagzeile12
+
+mapping <- c("Das Paar Heidi Klum und Tom Kaulitz hat sich auf der berühmten Halloween-Party von Heidi Klum zerstritten. Sie haben die Party getrennt verlassen und Tom hat die nächsten zwei Nächte bei seinem Bruder Bill verbracht."= 0, "Heidi Klum und Tom Kaulitz haben sich nach der berühmten Halloween-Party von Heidi Klum über zahlreiche Patzer des Caterers beschwert und 10% der Ausgaben für Essen und Getränke zurückerhalten."= 0, "Die berühmte Halloween-Party von Heidi Klum war ein Flop. Angekündigte Stars wie Gigi Hadid, Nicole Scherzinger oder Jennifer Lopez sind nicht erschienen."= 1)
+
+raw.short$head_12 <- mapping[as.character(raw.short$Schlagzeile12)]
+
 ```
 
 
