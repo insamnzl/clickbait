@@ -1904,6 +1904,10 @@ raw.short %>% select(starts_with("head_")) %>%
   pivot_longer(cols = c(head_1, head_2, head_3, head_4, head_5, head_6, head_7, head_8, head_9, head_10, head_11, head_12))
 ```
 
+```{r, raw.short gespeichert als csv Datei}
+#write.csv2(raw.short, "data/raw.short.csv")
+```
+
 ## 
 
 
