@@ -1884,11 +1884,57 @@ df12 <- tibble::tribble(
 
 ```{r, Test Pivotisieren und semantisches Differenzial}
 
+keylist =(list(sz1 = c("Schlagzeile1_SemDiff1", "Schlagzeile1_SemDiff2", "Schlagzeile1_SemDiff3", "Schlagzeile1_SemDiff4", "Schlagzeile1_SemDiff5", "Schlagzeile1_SemDiff6", "Schlagzeile1_SemDiff7"), 
+               sz2 = c("Schlagzeile2_SemDiff1", "Schlagzeile2_SemDiff2", "Schlagzeile2_SemDiff3", "Schlagzeile2_SemDiff4", "Schlagzeile2_SemDiff5", "Schlagzeile2_SemDiff6", "Schlagzeile2_SemDiff7"), 
+               sz3 = c("Schlagzeile3_SemDiff1", "Schlagzeile3_SemDiff2", "Schlagzeile3_SemDiff3", "Schlagzeile3_SemDiff4", "Schlagzeile3_SemDiff5", "Schlagzeile3_SemDiff6", "Schlagzeile3_SemDiff7"), 
+               sz4 = c( "Schlagzeile4_SemDiff1", "Schlagzeile4_SemDiff2", "Schlagzeile4_SemDiff3", "Schlagzeile4_SemDiff4", "Schlagzeile4_SemDiff5", "Schlagzeile4_SemDiff6", "Schlagzeile4_SemDiff7"), 
+               sz5 = c("Schlagzeile5_SemDiff1", "Schlagzeile5_SemDiff2", "Schlagzeile5_SemDiff3", "Schlagzeile5_SemDiff4", "Schlagzeile5_SemDiff5", "Schlagzeile5_SemDiff6", "Schlagzeile5_SemDiff7" ),
+               sz6 = c("Schlagzeile6_SemDiff1", "Schlagzeile6_SemDiff2", "Schlagzeile6_SemDiff3", "Schlagzeile6_SemDiff4", "Schlagzeile6_SemDiff5", "Schlagzeile6_SemDiff6", "Schlagzeile6_SemDiff7"),
+               sz7 = c("Schlagzeile7_SemDiff1", "Schlagzeile7_SemDiff2", "Schlagzeile7_SemDiff3", "Schlagzeile7_SemDiff4", "Schlagzeile7_SemDiff5", "Schlagzeile7_SemDiff6", "Schlagzeile7_SemDiff7"),
+               sz8 = c("Schlagzeile8_SemDiff1", "Schlagzeile8_SemDiff2", "Schlagzeile8_SemDiff3", "Schlagzeile8_SemDiff4", "Schlagzeile8_SemDiff5", "Schlagzeile8_SemDiff6", "Schlagzeile8_SemDiff7"),
+               sz9 = c("Schlagzeile9_SemDiff1", "Schlagzeile9_SemDiff2", "Schlagzeile9_SemDiff3", "Schlagzeile9_SemDiff4", "Schlagzeile9_SemDiff5", "Schlagzeile9_SemDiff6", "Schlagzeile9_SemDiff7"), 
+               sz10 = c("Schlagzeile10_SemDiff1", "Schlagzeile10_SemDiff2", "Schlagzeile10_SemDiff3", "Schlagzeile10_SemDiff4", "Schlagzeile10_SemDiff5", "Schlagzeile10_SemDiff6", "Schlagzeile10_SemDiff7"), 
+               sz11 = c("Schlagzeile11_SemDiff1", "Schlagzeile11_SemDiff2", "Schlagzeile11_SemDiff3", "Schlagzeile11_SemDiff4", "Schlagzeile11_SemDiff5", "Schlagzeile11_SemDiff6", "Schlagzeile11_SemDiff7"),
+               sz12 = c("Schlagzeile12_SemDiff1", "Schlagzeile12_SemDiff2", "Schlagzeile12_SemDiff3",      "Schlagzeile12_SemDiff4", "Schlagzeile12_SemDiff5", "Schlagzeile12_SemDiff6", "Schlagzeile12_SemDiff7")
+               )
+          )
+
+
+raw.short %>% pivot_longer(cols = sz1, sz2, sz3, sz4, sz5, sz6, sz7, sz8, sz9, sz10, sz11, sz12) %>% 
+  ggplot() +
+  aes(x=name, y=value) +
+  stat_summary(fun.data = "mean_se()") +
+  coord_flip()
+
+
 ```
-```{r, gathering}
+
+```{r, gathering 1 }
 raw.short %>% select(starts_with("head_")) %>% 
-  pivot_longer(cols = c(head_1, head_2, head_3, head_4, head_5, head_6, head_7, head_8, head_9, head_10, head_11, head_12))
+  pivot_longer(cols = c(head_1, head_2, head_3, head_4, head_5, head_6, head_7, head_8, head_9, head_10, head_11, head_12)) %>% 
+  ggplot + aes(x=name, y=value) +
+  geom_jitter()
+
 ```
+```{r gathering 2}
+
+keylist = list(sz1 = c("sz1_sd1", "sz1_sd2", "sz1_sd3", "sz1_sd4", "sz1_sd5", "sz1_sd6", "sz1_sd7", "sz1_sd8", "sz1_sd9", "sz1_sd10", "sz1_sd11", "sz1_sd12"),
+           sz2 = c("sz2_sd1", "sz2_sd2", "sz2_sd3", "sz2_sd4", "sz2_sd5", "sz2_sd6", "sz2_sd7", "sz2_sd8", "sz2_sd9", "sz2_sd10", "sz2_sd11", "sz2_sd12"))
+
+psych::scoreItems(keylist, df1, df2, min = 1, max = 5)
+
+df1, df2 %>%  bind_cols(as_tribble(res$scores)) %>% 
+       pivot_longer(cols = c(sz1, sz2)) %>% 
+       ggplot() +
+       aes(x=name, y=value) +
+       geom_jitter(width = 0.1, height = 0.1)
+
+
+#pivot_longer(cols = c(head_1, head_2, head_3, head_4, head_5, head_6, head_7, head_8, head_9, head_10, head_11, head_12)) %>% 
+
+```
+
+
 
 ```{r, raw.short gespeichert als csv Datei}
 #write.csv2(raw.short, "data/raw.short.csv")
