@@ -1849,10 +1849,35 @@ psych:: scoreItems(keylist_semdiff, raw.short, min = 1, max = 5)
 ```
 
 ```{r, gathering 1 }
-datensatz %>% select(starts_with("head_")) %>% 
-  pivot_longer(cols = c(head_1, head_2, head_3, head_4, head_5, head_6, head_7, head_8, head_9, head_10, head_11, head_12)) %>% 
-  ggplot + aes(x=name, y=value) +
-geom_jitter()
+
+#head_1, head_2, head_3, head_4, head_5, head_6, head_7, head_8, head_9, head_10, head_11, head_12
+
+colnames(datensatz)[which(names(datensatz) == "head_1")] <- "1"
+colnames(datensatz)[which(names(datensatz) == "head_2")] <- "2"
+colnames(datensatz)[which(names(datensatz) == "head_3")] <- "3"
+colnames(datensatz)[which(names(datensatz) == "head_4")] <- "4"
+colnames(datensatz)[which(names(datensatz) == "head_5")] <- "5"
+colnames(datensatz)[which(names(datensatz) == "head_6")] <- "6"
+colnames(datensatz)[which(names(datensatz) == "head_7")] <- "7"
+colnames(datensatz)[which(names(datensatz) == "head_8")] <- "8"
+colnames(datensatz)[which(names(datensatz) == "head_9")] <- "9"
+colnames(datensatz)[which(names(datensatz) == "head_10")] <- "10"
+colnames(datensatz)[which(names(datensatz) == "head_11")] <- "11"
+colnames(datensatz)[which(names(datensatz) == "head_12")] <- "12"
+
+
+datensatz %>% 
+  pivot_longer(cols = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")) %>% 
+  ggplot + 
+  aes(x = name, y=value)+
+   labs (x= "Schlagzeile", y = "Antwort", title = "Verhältnis zwischen richtigen und falschen Antworten der Probanden", caption = "n = 121")+
+  theme_bw()+
+  geom_jitter()
+
+ggsave("Antworten der Probanden.jpeg")
+
+  
+
 ```
 
 
