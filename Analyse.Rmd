@@ -1,13 +1,15 @@
 ---
 title: "Analyse"
 author: "Fabian Comanns, Peter Gödde, Nicole Herbolt, Insa Menzel"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-#install.packages("datapasta")
-#install.packages("questionr")
+install.packages("datapasta")
+install.packages("questionr")
 
 library(devtools)
 #devtools::install_github("HCIC/r-tools")
@@ -18,6 +20,8 @@ library(likert)
 library(psych)
 library(sjlabelled)
 library(datapasta) 
+library(knitr)
+options(scipen = 1, digits = 3)
 ```
 
 # Daten laden und bereinigen
@@ -2492,6 +2496,48 @@ ggsave("Semantisches Differenzial Wirtschaft.jpeg")
 
 
 ```{r pressure, echo=FALSE}
+
+```
+
+```{r deskriptive Statistik, Stichprobenbeschreibung}
+raw_data <- raw %>%  select(-StartDate, -EndDate, -Status, -IPAddress, -Progress, -Finished, -RecipientLastName, -RecipientEmail, -RecipientFirstName, -ExternalReference, -LocationLatitude, -LocationLongitude, -DistributionChannel, -UserLanguage, -RecordedDate, -ResponseId)
+
+psych::describe(raw_data) %>%  kable()
+
+raw_data %>% 
+  ggplot() + 
+  aes(x=Age, fill=factor(Gender)) + 
+  geom_histogram(bins = 30) +
+labs (x= "Alter", y = "Häufigkeit", title = "Verteilung des Alters")
+
+ggsave("Altersverteilung.jpeg")
+
+```
+
+
+## Hypothesentests 
+
+### H1: Ältere Personen werden eher von Clickbait-Schlagzeilen getäuscht als jüngere Personen.
+```{r}
+
+t.test(raw_data$Age, mu = 34)
+
+
+
+```
+ 
+### H2: Frauen und Männer werden gleichermaßen von Clickbait getäuscht.
+```{r}
+
+```
+
+### H3: Personen, die geübt im Umgang mit Online-Medien und Technik sind, erkennen Clickbait-Schlagzeilen eher als Personen, die selten mit Online-Medien und Technik in Berührung kommen. 
+```{r}
+
+```
+
+### H4: Die Persönlichkeitsfaktoren nach BIG5 haben einen Einfluss auf die Wahrnehmung von Clickbait-Schlagzeilen im Vergleich zu herkömmlichen Schlagzeilen.
+```{r}
 
 ```
 
