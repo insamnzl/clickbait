@@ -2517,7 +2517,7 @@ datensatz %>%
   ggplot() + 
   aes(x=Age, fill=factor(Gender)) + 
   geom_histogram(bins = 60) +
-labs (x= "Alter", y = "Häufigkeit", fill = "Geschlecht", title = "Verteilung des Alters", subtitle = "n = 121")
+labs (x= "Alter", y = "Häufigkeit", fill = "Geschlecht", title = "Verteilung des Alters", caption = "n = 121")
 
 ggsave("Altersverteilung.jpeg")
 ```
