@@ -30,7 +30,7 @@ raw %>%
   filter(Status == "IP Address") %>% 
   filter(Progress == 100) -> raw
 
-raw.short <- raw[,c(-1:-17, -21, -139:-140)]
+raw.short <- raw[c(-10, -107),c(-1:-17, -21, -139:-140)]
 
 raw.head <- raw.short[,c(-1:-22, -119:-120)]
 
@@ -2510,6 +2510,17 @@ df_sz <- tibble::tribble(
 ```{r}
 rwthcolor <- hcictools::rwth.colorpalette()
 ```
+```{r}
+
+
+datensatz %>% 
+  ggplot() + 
+  aes(x=Age, fill=factor(Gender)) + 
+  geom_histogram(bins = 60) +
+labs (x= "Alter", y = "Häufigkeit", fill = "Geschlecht", title = "Verteilung des Alters", subtitle = "n = 121")
+
+ggsave("Altersverteilung.jpeg")
+```
 
 ```{r}
 describe(datensatz)
@@ -2536,6 +2547,9 @@ t.test(new_df$Age~new_df$head_10)
 t.test(new_df$Age~new_df$head_11)
 t.test(new_df$Age~new_df$head_12)
 
+
+##Unterschiedshypothese 3 testen
+
 t.test(filter (datensatz, Gender == "Männlich")$eco,
        filter (datensatz, Gender == "Weiblich")$eco)
 
@@ -2543,9 +2557,8 @@ t.test(filter (datensatz, Gender =="Männlich")$pol,
        filter (datensatz, Gender == "Weiblich")$pol)
 
 t.test(filter (datensatz, Gender == "Männlich")$cult,
-       flter (datensatz, Gender == "Weiblich")$cult)
+       filter (datensatz, Gender == "Weiblich")$cult)
 
-df_age <- new_df %>% filter(Gender!= 3,4)
 
 cor.test(data = df_age,~ Gender+pol)
  
