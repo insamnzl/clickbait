@@ -145,7 +145,7 @@ skala.education <- c("Kein Abschluss",
                      "Realschulabschluss/Mittlere Reife",
                      "Fachabitur/Abitur",
                      "Berufsausbildung",
-                     "Studienabschluss (Bachelor, Master, Magister, Diplom, Promotion, etc.")
+                     "Studienabschluss (Bachelor, Master, Magister, Diplom, Promotion, etc.)")
 
 
 
@@ -1843,6 +1843,10 @@ sz12 <- c("Schlagzeile12SemDiff_1", "Schlagzeile12SemDiff_2", "Schlagzeile12SemD
 
 psych:: scoreItems(keylist_semdiff, raw.short, min = 1, max = 5)
 
+describe(datensatz)
+
+View(raw.short$Ausbildung)
+
 
 
 
@@ -1870,16 +1874,19 @@ datensatz %>% rename("alter" = "Age")
 
 datensatz %>% 
   pivot_longer(cols = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")) %>% 
-  mutate(clickbait =case_when(name == "5" ~ TRUE,
-                              name == "2" ~TRUE,
+  mutate(nonclickbait =case_when(name == "1" ~ TRUE,
+                              name == "4" ~ TRUE,
+                              name =="6"~ TRUE,
+                              name == "7" ~ TRUE,
+                              name == "9" ~ TRUE,
                               TRUE ~ FALSE)) %>% 
   ggplot + 
-  aes(x = name, y=value, color = clickbait)+
-   labs (x= "Schlagzeile", y = "Antwort", title = "Verhältnis zwischen richtigen und falschen Antworten der Probanden", caption = "n = 121")+
+  aes(x = name, y=value, color = nonclickbait)+
+   labs (x= "Schlagzeile", y = "Antwort", title = "Verhältnis zwischen richtigen und falschen Antworten der Probanden", color = "Clickbait- und Non-Clickbait-Schlagzeilen", caption = "n = 121")+
   theme_bw()+
   geom_jitter()
 
-ggsave("Antworten der Probanden.jpeg")
+ggsave("Antworten der Probanden.jpeg", width = 12, height = 6)
 
   
 
@@ -2227,7 +2234,7 @@ bewertet als Non-Clickbait-Schlagzeilen.",
         subtitle = "Semantisches Differenzial zu der Bewertung von Online-Schlagzeilen ")+
   coord_flip()
 
-ggsave("Semantisches Differenzial Kultur.jpeg")
+#ggsave("Semantisches Differenzial Kultur.jpeg")
 ```
 ```{r, semantisches DIfferenzial Wirtschaft}
 
@@ -2394,7 +2401,7 @@ Wirtschaft werden gleich bewertet.",
         subtitle = "Semantisches Differenzial zu der Bewertung von Online-Schlagzeilen ")+
   coord_flip()
 
-ggsave("Semantisches Differenzial Wirtschaft.jpeg")
+#ggsave("Semantisches Differenzial Wirtschaft.jpeg")
 ```
 ```{r dataframe Schlagzeilen}
 df_sz <- tibble::tribble(
@@ -2546,7 +2553,17 @@ datensatz %>%
   geom_histogram(bins = 60) +
 labs (x= "Alter", y = "Häufigkeit", fill = "Geschlecht", title = "Verteilung des Alters", caption = "n = 121")
 
-ggsave("Altersverteilung.jpeg")
+#ggsave("Altersverteilung.jpeg")
+
+
+ggplot(raw.short) +
+ aes(x = Ausbildung) +
+  labs (y = "Anzahl der Probanden", title = "Der Großteil der Probanden hat einen Studienabschluss", caption = "n = 121")+
+ geom_bar(fill = "#0c4c8a") +
+ theme_minimal()+
+  coord_flip()
+ggsave("Ausbildung der Probanden.jpeg", width = 12, height = 8)
+
 ```
 
 ```{r}
@@ -2559,25 +2576,24 @@ datensatz %>% ggplot() + aes(x = Age) + geom_histogram(bins = 60)+
 
 new_df <- transform(datensatz, altersgruppe=cut(datensatz$Age, breaks=c(-Inf, 35, Inf), labels=c("jung", "alt")))
 
-##Unterschiedshypothese 1
+##Unterschiedshypothese 1, nur bei Schlagzeile 5 (Katzenberger) gibt es einen Unterschied zwischen Jung und Alt
 
-new_df$Age
 
-new_df$head_1
 t.test(new_df$head_1~new_df$altersgruppe)
+t.test(new_df$head_2~new_df$altersgruppe)
+t.test(new_df$head_3~new_df$altersgruppe)
+t.test(new_df$head_4~new_df$altersgruppe)
 
-#Alle umdrehen
-t.test(new_df$Age~new_df$head_2)
-t.test(new_df$Age~new_df$head_3)
-t.test(new_df$Age~new_df$head_4)
-t.test(new_df$Age~new_df$head_5)
-t.test(new_df$Age~new_df$head_6)
-t.test(new_df$Age~new_df$head_7)
-t.test(new_df$Age~new_df$head_8)
-t.test(new_df$Age~new_df$head_9)
-t.test(new_df$Age~new_df$head_10)
-t.test(new_df$Age~new_df$head_11)
-t.test(new_df$Age~new_df$head_12)
+t.test(new_df$head_5~new_df$altersgruppe)
+#Es gibt einen Unterschied in der Erkennung der Clickbait-Schlagzeile 5 zwischen jüngeren und älteren Personen (t(104) = 2.28, p = .02*). 
+
+t.test(new_df$head_6~new_df$altersgruppe)
+t.test(new_df$head_7~new_df$altersgruppe)
+t.test(new_df$head_8~new_df$altersgruppe)
+t.test(new_df$head_9~new_df$altersgruppe)
+t.test(new_df$head_10~new_df$altersgruppe)
+t.test(new_df$head_11~new_df$altersgruppe)
+t.test(new_df$head_12~new_df$altersgruppe)
 
 
 ##Unterschiedshypothese 3 testen, Nochmal bearbeiten, Tests funktionieren so nicht
@@ -2585,31 +2601,67 @@ t.test(new_df$Age~new_df$head_12)
 t.test(eco~Gender_rec, data = datensatz)
 
 ## Recoding datensatz$Gender into datensatz$Gender_rec
-datensatz$Gender_rec <- fct_recode
+datensatz$Gender_rec <- fct_recode(datensatz$Gender,
+               "Männlich" = "Keine Angabe")
+
 
 t.test(filter (datensatz, pol)$Gender_rec)
+
+t.test(datensatz$cult~datensatz$Gender_rec)
+t.test(datensatz$pol~datensatz$Gender_rec)
+t.test(datensatz$eco~datensatz$Gender_rec)
 
 t.test(filter (datensatz$eco~datensatz$Gender_rec),
        filter (datensatz$eco~datensatz$Gender_rec))
 
-t.test(filter (datensatz$pol~datensatz, Gender_rec =="Männlich"),
-       filter (datensatz$pol~datensatz, Gender_rec == "Weiblich"$pol))
 
-t.test(filter (datensatz, Gender == "Männlich")$cult,
-       filter (datensatz, Gender == "Weiblich")$cult)
 
 
 cor.test(data = datensatz %>% mutate(Gender = as.numeric(Gender)),~ Gender+pol)
 
-corrMatrix(datensatz, vars = c( "Age", "bfi_o", "bfi_c", "bfi_e", "bfi_a", "bfi_n", "skills", "pol", "cult", "eco"), pearson = TRUE)
+corrMatrix(datensatz, vars = c("Age", "bfi_o", "bfi_c", "bfi_e", "bfi_a", "bfi_n", "skills", "pol", "cult", "eco"), pearson = TRUE)
 
 
 # head 1-12 zusammenrechnen und Korrelation zwischen den gesammelten heads mit internetskills und anschließend noch mit big5
 
-datensatz <- datensatz %>% rowwise %>% mutate(score = richt1 + ticht)
-cor.test(data = datensatz, ~score+skillz)
+datensatz <- datensatz %>% rowwise %>% mutate(score = head_1 + head_2 + head_3 + head_4 + head_5 + head_6 + head_7 + head_8 + head_9 + head_10 + head_11 + head_12)
 
+datensatz <- datensatz %>% mutate(score_c = head_2 + head_3 + head_5 + head_8 + head_10 + head_11 + head_12)
+
+datensatz <- datensatz %>% mutate(score_nc = head_1 + head_4 + head_6 + head_7 + head_9)
+
+cor.test(data = datensatz, ~score_nc+skills)
+
+cor.test(data = datensatz, ~score_c+skills)
+
+cor.test(data = datensatz, ~ score+skills)
+ggplot(datensatz) +
+ aes(x = skills, y = score) +
+ geom_jitter(size = 1L, colour = "#0c4c8a") +
+  labs ( x = "Internetskills", y = "Anteil der richtigen Themenzuordnung zur Schlagzeile", title = "Personen, die geübter im Umgang mit dem Internet sind, ordnen den 
+Schlagzeilen eher den richtigen Themeninhalt zu", caption = "n =121")+
+ theme_minimal()
+ 
+ #ggsave("Zusammenhang Scores gesamt und Skills.jpeg", width = 8, height = 6)
+ 
+ggplot(datensatz) +
+ aes(x = skills, y = score_nc) +
+ geom_jitter(size = 1L, colour = "#0c4c8a") +
+  labs ( x = "Internetskills", y = "Richtige Themenzuordnung zu den Non-Clickbait-Schlagzeilen", title = "Personen, die geübter im Umgang mit dem Internet sind, ordnen den 
+Non-Clickbait-Schlagzeilen eher den richtigen Themeninhalt zu", caption = "n =121")+
+ theme_minimal()
+ 
+ ggsave("Zusammenhang Scores NC und Skills.jpeg", width = 8, height = 6)
+cor.test(data = datensatz, ~ score+bfi_o)
+cor.test(data = datensatz, ~score + bfi_c)
+cor.test(data = datensatz, ~score + bfi_e)
+cor.test(data = datensatz, ~score + bfi_a)
+cor.test(data = datensatz, ~score + bfi_n)
 ```
+Es besteht ein signifikanter positiver Zusammenhang zwischen den Internetfähigkeiten der Probanden und der Themenzuordnung zu den Schlagzeilen (r(121) = .26, p = .004**). Je geübter die Probanden im Umgang mit dem Internet sind, desto eher ordnen sie den richtigen Artikelinhalt der gegebenen Schlagzeile zu.
+
+Es besteht ein signifikanter positiver Zusammenhang zwischen den Internetfähigkeiten der Probanden und der Themenzuordnung zu den Non-Clickbait-Schlagzeilen (r(121) = .22, p = .01*). Je geübter die Probanden im Umgang mit dem Internet sind, desto eher ordnen sie den richtigen Artikelinhalt der gegebenen Non-Clickbait-Schlagzeile zu. 
+
 
 ```{r}
 
