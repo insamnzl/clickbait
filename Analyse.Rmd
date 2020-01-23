@@ -2599,6 +2599,7 @@ View(new_df$altersgruppe)
 
 cor.test(data = datensatz, ~Age+score)
 
+#Visualisierung zu H1
 ggplot(datensatz) +
  aes(x = Age, y = score) +
  geom_point(size = 1L, colour = "#0c4c8a") +
@@ -2606,9 +2607,20 @@ ggplot(datensatz) +
   labs (x = "Alter", y = "Korrekte Themenzuordnung", title = "Es gibt keinen Zusammenhang zwischen der korrekten Themenzuordnung und 
 dem Alter.", caption = "n = 121")+
  theme_minimal()
-ggsave("Zusammenhang_h1_gesamt.jpeg")
+#ggsave("Zusammenhang_h1_gesamt.jpeg")
 
 cor.test(data = datensatz, ~Age+score_c)
+
+#Visualisierung zu H1
+
+ggplot(datensatz) +
+ aes(x = Age, y = score_c) +
+ geom_jitter(size = 1L, colour = "#0c4c8a") +
+  labs( x = "Alter", y = "Korrekte Themenzuordnung zu den Clickbait-Schlagzeilen", title = "Es gibt keinen signifikanten Zusammenhang zwischen dem Alter und 
+der Erkennung von Clickbait-Schlagzeilen.", caption = "n = 121")+
+ theme_minimal()
+
+#ggsave("Kein Zusammenhang Age Clickbait H1.jpeg")
 
 cor.test(data= datensatz, ~Age+score_nc)
 
@@ -2650,6 +2662,7 @@ ggplot(datensatz) +
   labs (x = "Geschlecht", y = "Korrekte Themenzuordnung", title = "Es gibt keinen Unterschied in der korrekten Themenzuordnung zwischen 
 Männern und Frauen.", caption = "n = 121")+
  theme_minimal()
+
 ggsave("Unterschied_h2.jpeg")
 
 t.test(filter (datensatz, score_nc$datensatz, Gender_rec == "Männlich"),
@@ -2674,7 +2687,7 @@ corrMatrix(datensatz, vars = c("Age", "bfi_o", "bfi_c", "bfi_e", "bfi_a", "bfi_n
 
 # head 1-12 zusammenrechnen und Korrelation zwischen den gesammelten heads mit internetskills und anschließend noch mit big5
 
-
+##Zusammenhangshypothese 3:
 
 cor.test(data = datensatz, ~score_nc+skills)
 
@@ -2698,6 +2711,9 @@ Non-Clickbait-Schlagzeilen eher den richtigen Themeninhalt zu", caption = "n =12
  theme_minimal()
  
  #ggsave("Zusammenhang Scores NC und Skills.jpeg", width = 8, height = 6)
+
+##Zusammenhangshypothese 4
+
 cor.test(data = datensatz, ~ score_c+bfi_o)
 cor.test(data = datensatz, ~score_c + bfi_c)
 cor.test(data = datensatz, ~score_c + bfi_e)
@@ -2722,13 +2738,35 @@ cor.test(data = datensatz, ~ pol + bfi_e)
 cor.test(data = datensatz, ~ pol + bfi_a)
 cor.test(data = datensatz, ~ pol + bfi_n)
 ```
+
+#Ergebnisse
+##Zusammenhangshypothese 1
+
+Es besteht kein signifikanter Zusammenhang zwischen dem Alter und der Erkennung von Clickbait-Schlagzeilen (r(121) =.07, p = .94)
+
+##Unterschiedshypothese 2
+Es besteht kein Unterschied zwischen Männern und Frauen in der Erkennung von Clickbait-Schlagzeilen (t(112.36) = .68, p =.49).
+
+##Zusammenhangshypothese 3
 Es besteht ein signifikanter positiver Zusammenhang zwischen den Internetfähigkeiten der Probanden und der Themenzuordnung zu den Schlagzeilen (r(121) = .26, p = .004**). Je geübter die Probanden im Umgang mit dem Internet sind, desto eher ordnen sie den richtigen Artikelinhalt der gegebenen Schlagzeile zu.
 
-Es besteht ein signifikanter positiver Zusammenhang zwischen den Internetfähigkeiten der Probanden und der Themenzuordnung zu den Non-Clickbait-Schlagzeilen (r(121) = .22, p = .01*). Je geübter die Probanden im Umgang mit dem Internet sind, desto eher ordnen sie den richtigen Artikelinhalt der gegebenen Non-Clickbait-Schlagzeile zu. 
+##Zu H3
+Es besteht ein signifikanter positiver Zusammenhang zwischen den Internetfähigkeiten der Probanden und der Themenzuordnung zu den Non-Clickbait-Schlagzeilen (r(121) = .22, p = .01**). Je geübter die Probanden im Umgang mit dem Internet sind, desto eher ordnen sie den richtigen Artikelinhalt der gegebenen Non-Clickbait-Schlagzeile zu. 
 
 
 ```{r}
+mean(datensatz$AnteilClickbait_1)
+sd(datensatz$AnteilClickbait_1)
 
+
+ggplot(datensatz) +
+ aes(x = AnteilClickbait_1) +
+ geom_histogram(bins = 30L, fill = "#0c4c8a") +
+  labs( x = "Geschätzter Anteil an Clickbait-Schlagzeilen", y = "Anzahl an Probanden", title = "Der Großteil der Stichprobe glaubt, dass 7-8 Clickbait-Schlagzeilen vorhanden 
+waren. (M = 7.3, SD = 1.6)", caption = "n= 121")+
+ theme_minimal()
+
+ggsave("Grafik Anteil Clickbait.jpeg")
 ```
 
 ## 
