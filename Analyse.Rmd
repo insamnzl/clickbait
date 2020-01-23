@@ -1854,28 +1854,29 @@ View(raw.short$Ausbildung)
 
 ```
 
-#Gathering aller Schlagzeilen
-```{r, gathering 1 }
+#Gathering aller Schlagzeilen, inaktiv
+```{r eval=FALSE, include=FALSE}
 
 #head_1, head_2, head_3, head_4, head_5, head_6, head_7, head_8, head_9, head_10, head_11, head_12
 
-colnames(datensatz)[which(names(datensatz) == "head_1")] <- "1"
-colnames(datensatz)[which(names(datensatz) == "head_2")] <- "2"
-colnames(datensatz)[which(names(datensatz) == "head_3")] <- "3"
-colnames(datensatz)[which(names(datensatz) == "head_4")] <- "4"
-colnames(datensatz)[which(names(datensatz) == "head_5")] <- "5"
-colnames(datensatz)[which(names(datensatz) == "head_6")] <- "6"
-colnames(datensatz)[which(names(datensatz) == "head_7")] <- "7"
-colnames(datensatz)[which(names(datensatz) == "head_8")] <- "8"
-colnames(datensatz)[which(names(datensatz) == "head_9")] <- "9"
-colnames(datensatz)[which(names(datensatz) == "head_10")] <- "10"
-colnames(datensatz)[which(names(datensatz) == "head_11")] <- "11"
-colnames(datensatz)[which(names(datensatz) == "head_12")] <- "12"
+
 
 
 datensatz %>% rename("alter" = "Age")
 
-datensatz %>% 
+#datensatz %>% 
+#  colnames(datensatz)[which(names(datensatz) == "head_1")] <- "1" %>% 
+#colnames(datensatz)[which(names(datensatz) == "head_2")] <- "2" %>% 
+colnames(datensatz)[which(names(datensatz) == "head_3")] <- "3" %>% 
+colnames(datensatz)[which(names(datensatz) == "head_4")] <- "4" %>% 
+colnames(datensatz)[which(names(datensatz) == "head_5")] <- "5" %>% 
+colnames(datensatz)[which(names(datensatz) == "head_6")] <- "6" %>% 
+colnames(datensatz)[which(names(datensatz) == "head_7")] <- "7" %>% 
+colnames(datensatz)[which(names(datensatz) == "head_8")] <- "8" %>% 
+colnames(datensatz)[which(names(datensatz) == "head_9")] <- "9" %>% 
+colnames(datensatz)[which(names(datensatz) == "head_10")] <- "10" %>% 
+colnames(datensatz)[which(names(datensatz) == "head_11")] <- "11" %>% 
+colnames(datensatz)[which(names(datensatz) == "head_12")] <- "12" %>% 
   pivot_longer(cols = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")) %>% 
   mutate(nonclickbait =case_when(name == "1" ~ TRUE,
                               name == "4" ~ TRUE,
@@ -2581,8 +2582,35 @@ ggplot(datensatz) +
 
 new_df <- transform(datensatz, altersgruppe=cut(datensatz$Age, breaks=c(-Inf, 35, Inf), labels=c("jung", "alt")))
 
-##Unterschiedshypothese 1, nur bei Schlagzeile 5 (Katzenberger) gibt es einen Unterschied zwischen Jung und Alt
+datensatz <- datensatz %>% rowwise %>% mutate(score = head_1 + head_2 + head_3 + head_4 + head_5 + head_6 + head_7 + head_8 + head_9 + head_10 + head_11 + head_12)
 
+datensatz <- datensatz %>% rowwise %>%  mutate(score_c = head_2 + head_3 + head_5 + head_8 + head_10 + head_11 + head_12)
+
+datensatz <- datensatz %>% rowwise %>% mutate(score_nc = head_1 + head_4 + head_6 + head_7 + head_9)
+
+View(new_df$altersgruppe)
+  
+##Zusammenhangshypothese 1: Es gibt einen Zusammenhang
+#score <- head_1 + head_2 + head_3 + head_4 + head_5 + head_6 + head_7 + head_8 + head_9 + head_10 + head_11 + head_12
+#score_c <- head_2 + head_3 + head_5 + head_8 + head_10 + head_11 + head_12
+#score_nc <- head_1 + head_4 + head_6 + head_7 + head_9
+
+
+
+cor.test(data = datensatz, ~Age+score)
+
+ggplot(datensatz) +
+ aes(x = Age, y = score) +
+ geom_point(size = 1L, colour = "#0c4c8a") +
+  geom_jitter()+
+  labs (x = "Alter", y = "Korrekte Themenzuordnung", title = "Es gibt keinen Zusammenhang zwischen der korrekten Themenzuordnung und 
+dem Alter.", caption = "n = 121")+
+ theme_minimal()
+ggsave("Zusammenhang_h1_gesamt.jpeg")
+
+cor.test(data = datensatz, ~Age+score_c)
+
+cor.test(data= datensatz, ~Age+score_nc)
 
 t.test(new_df$head_1~new_df$altersgruppe)
 t.test(new_df$head_2~new_df$altersgruppe)
@@ -2605,12 +2633,27 @@ t.test(new_df$head_12~new_df$altersgruppe)
 
 t.test(eco~Gender_rec, data = datensatz)
 
+#Unterschiedshypothese 2
+
 ## Recoding datensatz$Gender into datensatz$Gender_rec
 datensatz$Gender_rec <- fct_recode(datensatz$Gender,
                "Männlich" = "Keine Angabe")
 
-t.test(filter (datensatz, eco$datensatz, Gender == "Männlich"),
-       filter(datensatz, eco$datensatz, Gender == "Weiblich")$eco)
+t.test(datensatz$score~datensatz$Gender_rec)
+t.test(datensatz$score_c~datensatz$Gender_rec)
+t.test(datensatz$score_nc~datensatz$Gender_rec)
+
+#Visualisierung H2
+ggplot(datensatz) +
+ aes(x = Gender_rec, y = score) +
+ geom_boxplot(fill = "#0c4c8a") +
+  labs (x = "Geschlecht", y = "Korrekte Themenzuordnung", title = "Es gibt keinen Unterschied in der korrekten Themenzuordnung zwischen 
+Männern und Frauen.", caption = "n = 121")+
+ theme_minimal()
+ggsave("Unterschied_h2.jpeg")
+
+t.test(filter (datensatz, score_nc$datensatz, Gender_rec == "Männlich"),
+       filter(datensatz, score_nc$datensatz, Gender_rec == "Weiblich"))
 
 t.test(filter (datensatz, pol)$Gender_rec)
 
@@ -2626,16 +2669,12 @@ t.test(filter (datensatz$eco~datensatz$Gender_rec),
 
 cor.test(data = datensatz %>% mutate(Gender = as.numeric(Gender)),~ Gender+pol)
 
-corrMatrix(datensatz, vars = c("Age", "bfi_o", "bfi_c", "bfi_e", "bfi_a", "bfi_n", "skills", "pol", "cult", "eco"), pearson = TRUE)
+corrMatrix(datensatz, vars = c("Age", "bfi_o", "bfi_c", "bfi_e", "bfi_a", "bfi_n", "skills", "pol", "cult", "eco", "score", "score_nc", "score_c"), pearson = TRUE)
 
 
 # head 1-12 zusammenrechnen und Korrelation zwischen den gesammelten heads mit internetskills und anschließend noch mit big5
 
-datensatz <- datensatz %>% rowwise %>% mutate(score = head_1 + head_2 + head_3 + head_4 + head_5 + head_6 + head_7 + head_8 + head_9 + head_10 + head_11 + head_12)
 
-datensatz <- datensatz %>% mutate(score_c = head_2 + head_3 + head_5 + head_8 + head_10 + head_11 + head_12)
-
-datensatz <- datensatz %>% mutate(score_nc = head_1 + head_4 + head_6 + head_7 + head_9)
 
 cor.test(data = datensatz, ~score_nc+skills)
 
@@ -2658,12 +2697,30 @@ ggplot(datensatz) +
 Non-Clickbait-Schlagzeilen eher den richtigen Themeninhalt zu", caption = "n =121")+
  theme_minimal()
  
- ggsave("Zusammenhang Scores NC und Skills.jpeg", width = 8, height = 6)
+ #ggsave("Zusammenhang Scores NC und Skills.jpeg", width = 8, height = 6)
+cor.test(data = datensatz, ~ score_c+bfi_o)
+cor.test(data = datensatz, ~score_c + bfi_c)
+cor.test(data = datensatz, ~score_c + bfi_e)
+cor.test(data = datensatz, ~score_c + bfi_a)
+cor.test(data = datensatz, ~score_c + bfi_n)
+
+cor.test(data = datensatz, ~ score_nc+bfi_o)
+cor.test(data = datensatz, ~score_nc + bfi_c)
+cor.test(data = datensatz, ~score_nc + bfi_e)
+cor.test(data = datensatz, ~score_nc + bfi_a)
+cor.test(data = datensatz, ~score_nc + bfi_n)
+
 cor.test(data = datensatz, ~ score+bfi_o)
 cor.test(data = datensatz, ~score + bfi_c)
 cor.test(data = datensatz, ~score + bfi_e)
 cor.test(data = datensatz, ~score + bfi_a)
 cor.test(data = datensatz, ~score + bfi_n)
+
+cor.test(data = datensatz, ~ pol + bfi_o)
+cor.test(data = datensatz, ~ pol + bfi_c)
+cor.test(data = datensatz, ~ pol + bfi_e)
+cor.test(data = datensatz, ~ pol + bfi_a)
+cor.test(data = datensatz, ~ pol + bfi_n)
 ```
 Es besteht ein signifikanter positiver Zusammenhang zwischen den Internetfähigkeiten der Probanden und der Themenzuordnung zu den Schlagzeilen (r(121) = .26, p = .004**). Je geübter die Probanden im Umgang mit dem Internet sind, desto eher ordnen sie den richtigen Artikelinhalt der gegebenen Schlagzeile zu.
 
