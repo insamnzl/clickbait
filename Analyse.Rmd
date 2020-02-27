@@ -5,7 +5,6 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
 #install.packages("datapasta")
 #install.packages("questionr")
 
@@ -280,14 +279,6 @@ raw.short$Schlagzeile12SemDiff_5 <- ordered (raw.short$Schlagzeile12SemDiff_5, l
 raw.short$Schlagzeile12SemDiff_6 <- ordered (raw.short$Schlagzeile12SemDiff_6, levels = skala.semdif)
 raw.short$Schlagzeile12SemDiff_7 <- ordered (raw.short$Schlagzeile12SemDiff_7, levels = skala.semdif)
 
-
-
-
-
-
-
-
-
 ```
 
 
@@ -372,8 +363,6 @@ psych:: scoreItems(sd_group, datensatz, min = 1, max = 5)
 ressdgroup <- psych::scoreItems(sd_group, datensatz, impute = "median", min = 1, max =5)
 
 datensatz <- datensatz %>%  bind_cols(as_tibble(ressdgroup$scores))
-
-#View(raw.short$Ausbildung)
 ```
 
 #Gathering aller Schlagzeilen, inaktiv
@@ -386,9 +375,9 @@ datensatz <- datensatz %>%  bind_cols(as_tibble(ressdgroup$scores))
 
 datensatz %>% rename("alter" = "Age")
 
-#datensatz %>% 
-#  colnames(datensatz)[which(names(datensatz) == "head_1")] <- "1" %>% 
-#colnames(datensatz)[which(names(datensatz) == "head_2")] <- "2" %>% 
+datensatz %>% 
+colnames(datensatz)[which(names(datensatz) == "head_1")] <- "1" %>% 
+colnames(datensatz)[which(names(datensatz) == "head_2")] <- "2" %>% 
 colnames(datensatz)[which(names(datensatz) == "head_3")] <- "3" %>% 
 colnames(datensatz)[which(names(datensatz) == "head_4")] <- "4" %>% 
 colnames(datensatz)[which(names(datensatz) == "head_5")] <- "5" %>% 
@@ -1087,10 +1076,12 @@ rwthcolor <- hcictools::rwth.colorpalette()
 #Deskriptive Statistik
 ```{r}
 #Altersverteilung
+datensatz$Gender_rec <- fct_recode(datensatz$Gender,
+               "Männlich" = "Keine Angabe")
 
 datensatz %>% 
   ggplot() + 
-  aes(x=Age, fill=factor(Gender)) + 
+  aes(x=Age, fill=factor(Gender_rec)) + 
   geom_histogram(bins = 60) +
 labs (x= "Alter", y = "Häufigkeit", fill = "Geschlecht", title = "Verteilung des Alters", caption = "n = 121")
 
@@ -1337,7 +1328,8 @@ library(ggplot2)
 ggplot(datensatz) +
  aes(x = score_nc, y = sd_nc) +
   labs(x = "Anzahl der richtigen Themenzuordnung der Non-Clickbait Schlagzeilen", y = "Bewertung der Non-Clickbait-Schlagzeilen (1 = positiv, 
-       5 = negativ)")+
+       5 = negativ)", title = "Es gibt einen negativen Zusammenhang zwischen der Bewertung und der 
+richtigen Themenzuordnung von NC-Schlagzeilen.", caption = "n = 121")+
  geom_point() +
  theme_minimal()+
   geom_jitter()
@@ -1348,7 +1340,8 @@ ggplot(datensatz) +
 ggplot(datensatz) +
  aes(x = score_c, y = sd_c) +
   labs ( x = "Anzahl der richtigen Themenzuordnung der Clickbait-Schlagzeilen", y = "Bewertung der Clickbait-Schlagzeilen (1 = positiv,
-         5 = negativ)")+
+         5 = negativ)", title = "Es gibt einen Zusammenhang zwischen der Bewertung und der richtigen 
+Themenzuordnung von Clickbait-Schlagzeilen.", caption = "n = 121")+
  geom_point() +
  theme_minimal()+
   geom_jitter()
