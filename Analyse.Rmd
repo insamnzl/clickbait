@@ -1069,6 +1069,15 @@ df_sz <- tibble::tribble(
 #write.csv2(raw.short, "data/raw.short.csv")
 ```
 
+```{r, DataCleaning beenden}
+datensatz <- datensatz %>% 
+  select (-starts_with("Big"),
+          -starts_with("Schlagzeile"),
+          -starts_with("Internet"))
+
+#saveRDS(data, "data/ClickbaitFinal.rds")
+```
+
 #Farben der RWTH verfügbar machen
 
 ```{r}
@@ -1146,21 +1155,21 @@ der Erkennung von Clickbait-Schlagzeilen.", caption = "n = 121")+
 
 cor.test(data= datensatz, ~Age+score_nc)
 
-t.test(new_df$head_1~new_df$altersgruppe)
-t.test(new_df$head_2~new_df$altersgruppe)
-t.test(new_df$head_3~new_df$altersgruppe)
-t.test(new_df$head_4~new_df$altersgruppe)
+#t.test(new_df$head_1~new_df$altersgruppe)
+#t.test(new_df$head_2~new_df$altersgruppe)
+#t.test(new_df$head_3~new_df$altersgruppe)
+#t.test(new_df$head_4~new_df$altersgruppe)
 
-t.test(new_df$head_5~new_df$altersgruppe)
+#t.test(new_df$head_5~new_df$altersgruppe)
 #Es gibt einen Unterschied in der Erkennung der Clickbait-Schlagzeile 5 zwischen jüngeren und älteren Personen (t(104) = 2.28, p = .02*). 
 
-t.test(new_df$head_6~new_df$altersgruppe)
-t.test(new_df$head_7~new_df$altersgruppe)
-t.test(new_df$head_8~new_df$altersgruppe)
-t.test(new_df$head_9~new_df$altersgruppe)
-t.test(new_df$head_10~new_df$altersgruppe)
-t.test(new_df$head_11~new_df$altersgruppe)
-t.test(new_df$head_12~new_df$altersgruppe)
+#t.test(new_df$head_6~new_df$altersgruppe)
+#t.test(new_df$head_7~new_df$altersgruppe)
+#t.test(new_df$head_8~new_df$altersgruppe)
+#t.test(new_df$head_9~new_df$altersgruppe)
+#t.test(new_df$head_10~new_df$altersgruppe)
+#t.test(new_df$head_11~new_df$altersgruppe)
+#t.test(new_df$head_12~new_df$altersgruppe)
 
 
 ##Unterschiedshypothese 3 testen, Nochmal bearbeiten, Tests funktionieren so nicht
@@ -1185,10 +1194,10 @@ ggplot(datensatz) +
 Männern und Frauen.", caption = "n = 121")+
  theme_minimal()
 
-ggsave("Unterschied_h2.jpeg")
+#ggsave("Unterschied_h2.jpeg")
 
-t.test(filter (datensatz, score_nc$datensatz, Gender_rec == "Männlich"),
-       filter(datensatz, score_nc$datensatz, Gender_rec == "Weiblich"))
+t.test(filter (datensatz, datensatz$score_nc, Gender_rec == "Männlich"),
+       filter(datensatz, datensatz$score_nc, Gender_rec == "Weiblich"))
 
 t.test(filter (datensatz, pol)$Gender_rec)
 
@@ -1244,7 +1253,9 @@ cor.test(data = datensatz, ~score_c + bfi_n)
 
 cor.test(data = datensatz, ~ score_nc+bfi_o)
 cor.test(data = datensatz, ~score_nc + bfi_c)
+
 cor.test(data = datensatz, ~score_nc + bfi_e)
+
 cor.test(data = datensatz, ~score_nc + bfi_a)
 cor.test(data = datensatz, ~score_nc + bfi_n)
 
@@ -1257,8 +1268,25 @@ cor.test(data = datensatz, ~score + bfi_n)
 cor.test(data = datensatz, ~ pol + bfi_o)
 cor.test(data = datensatz, ~ pol + bfi_c)
 cor.test(data = datensatz, ~ pol + bfi_e)
+
 cor.test(data = datensatz, ~ pol + bfi_a)
+
 cor.test(data = datensatz, ~ pol + bfi_n)
+
+cor.test(data = datensatz, ~ eco + bfi_o)
+cor.test(data = datensatz, ~ eco + bfi_c)
+cor.test(data = datensatz, ~ eco + bfi_e)
+cor.test(data = datensatz, ~ eco + bfi_a)
+
+cor.test(data = datensatz, ~ eco + bfi_n)
+
+cor.test(data = datensatz, ~ cult + bfi_o)
+
+cor.test(data = datensatz, ~ cult + bfi_c)
+
+cor.test(data = datensatz, ~ cult + bfi_e)
+cor.test(data = datensatz, ~ cult + bfi_a)
+cor.test(data = datensatz, ~ cult + bfi_n)
 ```
 
 ```{r}
@@ -1307,11 +1335,26 @@ cor.test(data = datensatz, ~sd_nc+score_nc)
 library(ggplot2)
 
 ggplot(datensatz) +
- aes(x = score_c, y = sd_c) +
- geom_point(size = 1L, colour = "#0c4c8a") +
+ aes(x = score_nc, y = sd_nc) +
+  labs(x = "Anzahl der richtigen Themenzuordnung der Non-Clickbait Schlagzeilen", y = "Bewertung der Non-Clickbait-Schlagzeilen (1 = positiv, 
+       5 = negativ)")+
+ geom_point() +
  theme_minimal()+
   geom_jitter()
 
-View(datensatz$score_c)
+#ggsave("Zusammenhang Bewertung und Korrektheit NC.jpeg")
+
+
+ggplot(datensatz) +
+ aes(x = score_c, y = sd_c) +
+  labs ( x = "Anzahl der richtigen Themenzuordnung der Clickbait-Schlagzeilen", y = "Bewertung der Clickbait-Schlagzeilen (1 = positiv,
+         5 = negativ)")+
+ geom_point() +
+ theme_minimal()+
+  geom_jitter()
+
+#ggsave("Zusammenhang Bewertung und Korrektheit C.jpeg")
+
+
 ```
 
