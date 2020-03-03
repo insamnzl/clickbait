@@ -7,6 +7,7 @@ output: html_document
 ```{r setup, include=FALSE}
 #install.packages("datapasta")
 #install.packages("questionr")
+#install.packages("ggpubr")
 
 library(devtools)
 #devtools::install_github("HCIC/r-tools")
@@ -17,6 +18,7 @@ library(likert)
 library(psych)
 library(sjlabelled)
 library(datapasta) 
+library(ggpubr)
 ```
 
 # Daten laden und bereinigen
@@ -359,7 +361,8 @@ raw.short_final %>% bind_cols(as_tibble(ressemdif$scores))
 datensatz <- raw.short_final%>% bind_cols(as_tibble(ressemdif$scores))
 
 sd_group = list(sd_c = c("sz2", "sz3", "sz5", "sz8", "sz10", "sz11", "sz12"),
-                sd_nc = c("sz1", "sz4", "sz6", "sz7", "sz9"))
+                sd_nc = c("sz1", "sz4", "sz6", "sz7", "sz9"),
+                sd_all =c("sz1", "sz2", "sz3", "sz4", "sz5", "sz6", "sz7", "sz8", "sz9", "sz10", "sz11", "sz12"))
 
 psych:: scoreItems(sd_group, datensatz, min = 1, max = 5)
 
@@ -367,11 +370,7 @@ ressdgroup <- psych::scoreItems(sd_group, datensatz, impute = "median", min = 1,
 
 datensatz <- datensatz%>% bind_cols(as_tibble(ressdgroup$scores))
 
-scoreItems(bfi_keys, datensatz, missing = TRUE, min = 1, max =6)
 
-scoreItems(skill_keys, datensatz, missing = TRUE, min = 1, max = 6)
-
-scoreItems(keylist_semdiff, datensatz, missing = TRUE, min = 1, max = 5)
 
 
 ```
@@ -911,16 +910,16 @@ datensatz <- datensatz %>%
 
 
 #saveRDS(data, "data/ClickbaitFinal.rds")
-```
-
-#Farben der RWTH verfügbar machen
-
-```{r}
-rwthcolor <- hcictools::rwth.colorpalette()
+#write.csv2(datensatz, "data/ClickbaitFinal.csv")
 ```
 
 #Deskriptive Statistik
-```{r}
+```{r,Deskritptive Statistik}
+
+
+
+describe(datensatz)
+
 #Altersverteilung
 datensatz$Gender_rec <- fct_recode(datensatz$Gender,
                "Männlich" = "Keine Angabe")
@@ -951,6 +950,7 @@ ggplot(datensatz) +
 ```{r, Hypothesentests}
 
 
+#Summierte Themenzuordnung
 datensatz <- datensatz %>% rowwise %>% mutate(score = head_1 + head_2 + head_3 + head_4 + head_5 + head_6 + head_7 + head_8 + head_9 + head_10 + head_11 + head_12)
 
 datensatz <- datensatz %>% rowwise %>%  mutate(score_c = head_2 + head_3 + head_5 + head_8 + head_10 + head_11 + head_12)
@@ -958,23 +958,18 @@ datensatz <- datensatz %>% rowwise %>%  mutate(score_c = head_2 + head_3 + head_
 datensatz <- datensatz %>% rowwise %>% mutate(score_nc = head_1 + head_4 + head_6 + head_7 + head_9)
 
 
-cor.test(data = datensatz, )
+
+#H1: Es gibt einen Zusammenhang zwischen dem Alter und der Erkennung von Clickbait-Schlagzeilen.
 
 cor.test(data = datensatz, ~Age+score)
-
-
-
 cor.test(data = datensatz, ~Age+score_c)
-
-
-
 cor.test(data= datensatz, ~Age+score_nc)
 
 
 
 
 
-#Unterschiedshypothese 2
+#H2: Es gibt einen Unterschied zwischen Männern und Frauen in der Erkennung von Clickbait-Schlagzeilen.
 
 ## Recoding datensatz$Gender into datensatz$Gender_rec
 datensatz$Gender_rec <- fct_recode(datensatz$Gender,
@@ -989,26 +984,14 @@ t.test(datensatz$score_nc~datensatz$Gender_rec)
 t.test(filter (datensatz, datensatz$score_nc, Gender_rec == "Männlich"),
        filter(datensatz, datensatz$score_nc, Gender_rec == "Weiblich"))
 
-t.test(filter (datensatz, pol)$Gender_rec)
 
-t.test(datensatz$cult~datensatz$Gender_rec)
-t.test(datensatz$pol~datensatz$Gender_rec)
-t.test(datensatz$eco~datensatz$Gender_rec)
-
-t.test(filter (datensatz$eco~datensatz$Gender_rec),
-       filter (datensatz$eco~datensatz$Gender_rec))
-
-
-
-
-cor.test(data = datensatz %>% mutate(Gender = as.numeric(Gender)),~ Gender+pol)
 
 corrMatrix(datensatz, vars = c("Age", "bfio", "bfic", "bfie", "bfia", "bfin", "skills", "score", "score_nc", "score_c"), pearson = TRUE)
 
 
-# head 1-12 zusammenrechnen und Korrelation zwischen den gesammelten heads mit internetskills und anschließend noch mit big5
 
-##Zusammenhangshypothese 3:
+#H3:Es gibt einen Zusammenhang zwischen den Fähigkeiten im Umgang mit Online-Medien/Technik (InternetSkillScale) und der Erkennung von Non-Clickbait-Schlagzeilen.
+
 
 cor.test(data = datensatz, ~score_nc+skills)
 
@@ -1019,21 +1002,19 @@ cor.test(data = datensatz, ~ score+skills)
 
 ##Zusammenhangshypothese 4
 
-cor.test(data = datensatz, ~ score_c+bfio)
+cor.test(data = datensatz, ~score_c + bfio)
 cor.test(data = datensatz, ~score_c + bfic)
 cor.test(data = datensatz, ~score_c + bfie)
 cor.test(data = datensatz, ~score_c + bfia)
 cor.test(data = datensatz, ~score_c + bfin)
 
-cor.test(data = datensatz, ~ score_nc+bfio)
+cor.test(data = datensatz, ~score_nc + bfio)
 cor.test(data = datensatz, ~score_nc + bfic)
-
 cor.test(data = datensatz, ~score_nc + bfie)
-
 cor.test(data = datensatz, ~score_nc + bfia)
 cor.test(data = datensatz, ~score_nc + bfin)
 
-cor.test(data = datensatz, ~ score+bfio)
+cor.test(data = datensatz, ~score + bfio)
 cor.test(data = datensatz, ~score + bfic)
 cor.test(data = datensatz, ~score + bfie)
 cor.test(data = datensatz, ~score + bfia)
@@ -1043,6 +1024,7 @@ cor.test(data = datensatz, ~score + bfin)
 
 cor.test(data = datensatz, ~score_c + sd_c)
 cor.test(data = datensatz, ~score_nc + sd_nc)
+cor.test(data = datensatz, ~score + sd_all)
 
 
 ```
@@ -1050,21 +1032,20 @@ cor.test(data = datensatz, ~score_nc + sd_nc)
 ```{r, Visualisierungen }
 #Zu H1
 
-ggplot(datensatz) +
- aes(x = Age, y = score) +
- geom_point(size = 1L, colour = "#0c4c8a") +
-  geom_jitter()+
-  labs (x = "Alter", y = "Korrekte Themenzuordnung", title = "Es gibt keinen Zusammenhang zwischen der korrekten Themenzuordnung und 
-dem Alter.", caption = "n = 121")+
- theme_minimal()
+ggscatter(datensatz, x = "Age", y = "score", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Alter", ylab = "Korrekte Themenzuordnung", title = "Es gibt keinen Zusammenhang zwischen der korrekten Themenzuordnung und 
+dem Alter.", caption = "n = 119") +
+  geom_jitter()
+
 #ggsave("Zusammenhang_h1_gesamt.jpeg")
 
-ggplot(datensatz) +
- aes(x = Age, y = score_c) +
- geom_jitter(size = 1L, colour = "#0c4c8a") +
-  labs( x = "Alter", y = "Korrekte Themenzuordnung zu den Clickbait-Schlagzeilen", title = "Es gibt keinen signifikanten Zusammenhang zwischen dem Alter und 
-der Erkennung von Clickbait-Schlagzeilen.", caption = "n = 121")+
- theme_minimal()
+ggscatter(datensatz, x = "Age", y = "score", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Alter", ylab = "Korrekte Themenzuordnung zu C-Schlagzeilen", title = "Es gibt keinen signifikanten Zusammenhang zwischen dem Alter un der Erkennung von Clickbait-Schlagzeilen.", caption = "n = 119") +
+  geom_jitter()
 
 #ggsave("Kein Zusammenhang Age Clickbait H1.jpeg")
 
@@ -1081,38 +1062,42 @@ Männern und Frauen.", caption = "n = 121")+
 
 #Zu H3
 
-ggplot(datensatz) +
- aes(x = skills, y = score) +
- geom_jitter(size = 1L, colour = "#0c4c8a") +
-  labs ( x = "Internetskills", y = "Anteil der richtigen Themenzuordnung zur Schlagzeile", title = "Personen, die geübter im Umgang mit dem Internet sind, ordnen den 
-Schlagzeilen eher den richtigen Themeninhalt zu", caption = "n =121")+
- theme_minimal()
+ggscatter(datensatz, x = "skills", y = "score", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Internetskills", ylab = "Richtige Themenzuordnung zur Schlagzeile", caption = "n =119") +
+  geom_jitter()
+
+ ggsave("Zusammenhang Scores gesamt und Skills.jpeg", width = 8, height = 6)
  
- #ggsave("Zusammenhang Scores gesamt und Skills.jpeg", width = 8, height = 6)
+ggscatter(datensatz, x = "skills", y = "score_nc", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Internetskills", ylab = "Richtige Themenzuordnung zu NC-Schlagzeilen", caption = "n =119") +
+  geom_jitter()
  
-ggplot(datensatz) +
- aes(x = skills, y = score_nc) +
- geom_jitter(size = 1L, colour = "#0c4c8a") +
-  labs ( x = "Internetskills", y = "Richtige Themenzuordnung zu den Non-Clickbait-Schlagzeilen", title = "Personen, die geübter im Umgang mit dem Internet sind, ordnen den 
-Non-Clickbait-Schlagzeilen eher den richtigen Themeninhalt zu", caption = "n =121")+
- theme_minimal()
- 
- #ggsave("Zusammenhang Scores NC und Skills.jpeg", width = 8, height = 6)
+# ggsave("Zusammenhang Scores NC und Skills.jpeg", width = 8, height = 6)
 
 #Zu H4
 
 
 #Zu H5
+ggscatter(datensatz, x = "score_nc", y = "sd_nc", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Themenzuordnung Non-Clickbait", ylab = "Bewertung Non-Clickbait (1 = positiv, 5 = negativ)")+
+  geom_jitter()
 
-ggplot(datensatz) +
- aes(x = score_nc, y = sd_nc) +
- geom_point(size = 1L, colour = "#0c4c8a") +
- theme_minimal()
+#ggsave("Zusammenhang_h5_Non-Clickbait.jpeg", width = 8, height = 6)
 
-ggplot(datensatz) +
- aes(x = score_c, y = sd_c) +
- geom_point(size = 1L, colour = "#0c4c8a") +
- theme_minimal()
+ggscatter(datensatz, x = "score_c", y = "sd_c", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "Themenzuordnung Clickbait", ylab = "Bewertung Clickbait (1 = positiv, 5 = negativ)")+
+  geom_jitter()
+
+#ggsave("Zusammenhang_h5_Clickbait.jpeg", width = 8, height = 6)
+
 ```
 
 #Ergebnisse
