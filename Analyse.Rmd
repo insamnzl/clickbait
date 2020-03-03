@@ -292,6 +292,7 @@ head_keys <- list(pol = c("head_1", "head_3", "head_4"),
                   cult = c("head_5", "head_6", "head_9", "head_10", "head_12"),
                   eco = c("head_2", "head_7", "head_8", "head_11"))
 
+
 psych:: scoreItems(head_keys, raw.short, min = 0, max = 1)
 
 reshead <- psych::scoreItems(head_keys, raw.short, impute = "median", min = 0, max = 1)
@@ -358,20 +359,31 @@ psych:: scoreItems(keylist_semdiff, raw.short, min = 1, max = 5)
 ressemdif <- psych::scoreItems(keylist_semdiff, raw.short, impute = "median", min = 1, max =5)
 
 raw.short_final %>% bind_cols(as_tibble(ressemdif$scores))
-datensatz <- raw.short_final%>% bind_cols(as_tibble(ressemdif$scores))
+datensatz_raw <- raw.short_final%>% bind_cols(as_tibble(ressemdif$scores))
 
 sd_group = list(sd_c = c("sz2", "sz3", "sz5", "sz8", "sz10", "sz11", "sz12"),
                 sd_nc = c("sz1", "sz4", "sz6", "sz7", "sz9"),
                 sd_all =c("sz1", "sz2", "sz3", "sz4", "sz5", "sz6", "sz7", "sz8", "sz9", "sz10", "sz11", "sz12"))
 
-psych:: scoreItems(sd_group, datensatz, min = 1, max = 5)
+psych:: scoreItems(sd_group, datensatz_raw, min = 1, max = 5)
 
-ressdgroup <- psych::scoreItems(sd_group, datensatz, impute = "median", min = 1, max =5)
+ressdgroup <- psych::scoreItems(sd_group, datensatz_raw, impute = "median", min = 1, max =5)
 
-datensatz <- datensatz%>% bind_cols(as_tibble(ressdgroup$scores))
+datensatz <- datensatz_raw%>% bind_cols(as_tibble(ressdgroup$scores))
 
+sdressort_keys <- list (sd_pol = c("sz1", "sz3", "sz4"),
+                       sd_cult = c("sz5", "sz6", "sz9", "sz10", "sz12"),
+                        sd_eco = c("sz2", "sz7", "sz8", "sz11"))
 
+psych:: scoreItems(sdressort_keys, datensatz, min =1, max = 5)
 
+ressdressort <- psych::scoreItems(sdressort_keys, datensatz, impute = "median", min = 1, max = 5)
+
+datensatz <- datensatz %>% bind_cols(as_tibble(ressdressort$scores))
+
+describe(datensatz$sd_pol)
+describe(datensatz$sd_cult)
+describe (datensatz$sd_eco)
 
 ```
 
@@ -416,8 +428,6 @@ colnames(datensatz)[which(names(datensatz) == "head_12")] <- "12" %>%
   
 
 ```
-
-
 ```{r echo=FALSE}
 dfpol <-tibble::tribble(
           ~Personen, ~sd1_sz3, ~sd2_sz3, ~sd3_sz3, ~sd4_sz3, ~sd5_sz3, ~sd6_sz3, ~sd7_sz3, ~sd1_sz4, ~sd2_sz4, ~sd3_sz4, ~sd4_sz4, ~sd5_sz4, ~sd6_sz4, ~sd7_sz4, ~sd1_sz1, ~sd2_sz1, ~sd3_sz1, ~sd4_sz1, ~sd5_sz1, ~sd6_sz1, ~sd7_sz1,
@@ -981,8 +991,9 @@ t.test(datensatz$score_nc~datensatz$Gender_rec)
 
 
 
-t.test(filter (datensatz, datensatz$score_nc, Gender_rec == "Männlich"),
-       filter(datensatz, datensatz$score_nc, Gender_rec == "Weiblich"))
+describe(filter (datensatz, Gender_rec == "Männlich")$score_c)
+
+describe(filter(datensatz, Gender_rec == "Weiblich")$score_c)
 
 
 
@@ -1077,8 +1088,6 @@ ggscatter(datensatz, x = "skills", y = "score_nc",
   geom_jitter()
  
 # ggsave("Zusammenhang Scores NC und Skills.jpeg", width = 8, height = 6)
-
-#Zu H4
 
 
 #Zu H5
