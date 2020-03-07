@@ -1,8 +1,15 @@
 ---
-title: "Analyse"
+title: "Analysescript für die Datenauswertung der Erhebung zum Thema *Clickbait*"
 author: "Fabian Comanns, Peter Gödde, Nicole Herbolt, Insa Menzel"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
+Im Rahmen des Seminars "Usability, User Diversity und Technikakzeptanz" im Wintersemester 2019/2020 an der RWTH Aachen University hat sich der Kurs unter der Leitung von Dr. André Calero-Valdez mit dem Themengebiet "Mis- und Desinformationen im Internet" beschäftigt. Nach eingehender Beschäftigung mit verschiedenen Forschungszweigen hat sich die Gruppe, bestehend aus den oben genannten Autoren, dafür entschieden, den Fokus auf den Forschungszweig "Clickbait" zu legen. Nachdem der bisherige Forschungsstand zum Thema Clickbait grob resümiert wurde, hat sich folgende Forschungsfrage ergeben: 
+
+*Welchen Einfluss haben Nutzerfaktoren auf die Erkennung von Clickbait-Schlagzeilen in Online-Medien?*
+
+Dieses Dokument zeigt die Datenbereinigung, -aufbereitung und -auswertung hinsichtlich der Hypothesen, die dazu dienen, die übergeordnete Forschungsfrage zu beantworten. Am Ende des Dokuments werden die Ergebnisse kurz erläutert und weiterführende Untersuchungsaspekte genannt, die im Anschluss an diese Analyse interessant sein könnten.
 
 ```{r setup, include=FALSE}
 #install.packages("datapasta")
@@ -22,8 +29,7 @@ library(ggpubr)
 ```
 
 # Daten laden und bereinigen
-
-```{r}
+```{r Daten laden und bereinigen, warning=FALSE, include=FALSE}
 filename <- "data/clickbaitdata.csv"
 raw <- readSurvey (filename)
 
@@ -33,27 +39,17 @@ raw %>%
 
 raw.short <- raw[c(-10, -107),c(-1:-17, -21, -139:-140)]
 
-#raw.head <- raw.short[,c(-1:-22, -119:-120)]
-
-#write.csv2(raw.short, "data/raw.short.csv")
-
-
-
-#write.csv2(raw.head, "data/raw.head.csv")
 ```
 #Kategoriale und numerische Variablen generieren
-```{r, Kategoriale und numerische Variablen}
+```{r Kategoriale und numerische Variablen, include=FALSE}
 raw.short$Gender <- as.factor(raw.short$Gender)
  raw.short$Ausbildung <- as.factor(raw.short$Ausbildung)
 raw.short$Age <- as.numeric(raw.short$Age)
-
-
-
 ```
 
 
 #Schlagzeilen Werte zuordnen
-```{r, Mapping}
+```{r Werte zuordnen, echo=FALSE}
 #Schlagzeile1
 mapping <- c("Die EU-Kommission möchte das Ziel der Klimaneutralität bis 2050 gesetzlich festschreiben. Für Gebiete, die besonders von dem damit einhergehenden Strukturwandel betroffen wären, soll ein Übergangsfonds in zweistelliger Milliardenhöhe geschaffen werden."= 1, "Um das Ziel der Klimaneutralität bis 2050 erreichen zu können, hat die EU-Komissionen einen Übergangsfonds für Gebiete gefordert, die von dem Strukturwandel betroffen wären. Die Forderung wurde abgelehnt."= 0, "Die EU-Kommission hat beschlossen: Um die Klimaneutralität bis 2050 zu erreichen, werden alle Gebiete ab Januar 2020 mit einem Zuschuss von 1 Million Euro unterstützt. Das ist seit kurzem rechtlich geregelt."= 0)
 
@@ -129,13 +125,11 @@ mapping <- c("Das Paar Heidi Klum und Tom Kaulitz hat sich auf der berühmten Ha
 
 raw.short$head_12 <- mapping[as.character(raw.short$Schlagzeile12)]
 
-
-
 ```
 
 
 #Skalenbenennung
-```{r, Skalenbenennung}
+```{r Skalenbenennung, include=FALSE}
 skala.zutreffen <- c("Trifft überhaupt nicht zu",
                       "Trifft nicht zu",
                       "Trifft eher nicht zu",
@@ -156,12 +150,10 @@ skala.semdif <- c("1",
                   "4",
                   "5")
 
-
-
 ```
 
 #Skalenberechnung
-```{r, Skalenberechnung}
+```{r Skalenberechnung, include=FALSE}
 
 raw.short$Ausbildung <- ordered(raw.short$Ausbildung, levels = skala.education)
 
@@ -285,7 +277,7 @@ raw.short$Schlagzeile12SemDiff_7 <- ordered (raw.short$Schlagzeile12SemDiff_7, l
 
 
 #Faktorenzuweisung
-```{r echo=TRUE}
+```{r Faktorenzuweisung und Cronbachs Alpha, echo=FALSE, message=FALSE, warning=FALSE}
 raw.short %>% select(starts_with("head_")) %>%  get_label()
 
 head_keys <- list(pol = c("head_1", "head_3", "head_4"),
@@ -381,54 +373,12 @@ ressdressort <- psych::scoreItems(sdressort_keys, datensatz, impute = "median", 
 
 datensatz <- datensatz %>% bind_cols(as_tibble(ressdressort$scores))
 
-describe(datensatz$sd_pol)
-describe(datensatz$sd_cult)
-describe (datensatz$sd_eco)
+
 
 ```
 
-#Gathering aller Schlagzeilen, inaktiv
-```{r eval=FALSE, include=FALSE}
-
-#head_1, head_2, head_3, head_4, head_5, head_6, head_7, head_8, head_9, head_10, head_11, head_12
-
-
-
-
-datensatz %>% rename("alter" = "Age")
-
-datensatz %>% 
-colnames(datensatz)[which(names(datensatz) == "head_1")] <- "1" %>% 
-colnames(datensatz)[which(names(datensatz) == "head_2")] <- "2" %>% 
-colnames(datensatz)[which(names(datensatz) == "head_3")] <- "3" %>% 
-colnames(datensatz)[which(names(datensatz) == "head_4")] <- "4" %>% 
-colnames(datensatz)[which(names(datensatz) == "head_5")] <- "5" %>% 
-colnames(datensatz)[which(names(datensatz) == "head_6")] <- "6" %>% 
-colnames(datensatz)[which(names(datensatz) == "head_7")] <- "7" %>% 
-colnames(datensatz)[which(names(datensatz) == "head_8")] <- "8" %>% 
-colnames(datensatz)[which(names(datensatz) == "head_9")] <- "9" %>% 
-colnames(datensatz)[which(names(datensatz) == "head_10")] <- "10" %>% 
-colnames(datensatz)[which(names(datensatz) == "head_11")] <- "11" %>% 
-colnames(datensatz)[which(names(datensatz) == "head_12")] <- "12" %>% 
-  pivot_longer(cols = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")) %>% 
-  mutate(nonclickbait =case_when(name == "1" ~ TRUE,
-                              name == "4" ~ TRUE,
-                              name =="6"~ TRUE,
-                              name == "7" ~ TRUE,
-                              name == "9" ~ TRUE,
-                              TRUE ~ FALSE)) %>% 
-  ggplot + 
-  aes(x = name, y=value, color = nonclickbait)+
-   labs (x= "Schlagzeile", y = "Antwort", title = "Verhältnis zwischen richtigen und falschen Antworten der Probanden", color = "Clickbait- und Non-Clickbait-Schlagzeilen", caption = "n = 121")+
-  theme_bw()+
-  geom_jitter()
-
-#ggsave("Antworten der Probanden.jpeg", width = 12, height = 6)
-
-  
-
-```
-```{r echo=FALSE}
+#Semantisches Differenzial Politik
+```{r Semantisches Differenzial Politik, echo=FALSE}
 dfpol <-tibble::tribble(
           ~Personen, ~sd1_sz3, ~sd2_sz3, ~sd3_sz3, ~sd4_sz3, ~sd5_sz3, ~sd6_sz3, ~sd7_sz3, ~sd1_sz4, ~sd2_sz4, ~sd3_sz4, ~sd4_sz4, ~sd5_sz4, ~sd6_sz4, ~sd7_sz4, ~sd1_sz1, ~sd2_sz1, ~sd3_sz1, ~sd4_sz1, ~sd5_sz1, ~sd6_sz1, ~sd7_sz1,
                   1,        1,        3,        3,        2,        1,        1,        1,        2,        2,        3,        3,        2,        2,        2,        1,        2,        3,        3,        2,        2,        1,
@@ -552,12 +502,9 @@ dfpol <-tibble::tribble(
                 119,        5,        5,        5,        4,        2,        2,        4,        2,        3,        4,        4,        4,        2,        3,        2,        3,        3,        3,        2,        2,        2,
                 120,        4,        5,        5,        5,        1,        5,        5,        3,        4,        4,        3,        3,        4,        4,        2,        2,        2,        2,        2,        2,        2,
                 121,        4,        5,        5,        4,        4,        5,        4,        2,        2,        2,        2,        2,        2,        2,        2,        3,        3,        2,        2,        2,        2
-          )
+)
 
-```
 
-#Semantisches Differenzial Politik
-```{r, semantisches Differenzial Politik}
 my_dodge = position_dodge(width = 0.3)
 
 dfpol_1 <- dfpol %>% pivot_longer(cols = starts_with("sd")) %>% 
@@ -602,10 +549,8 @@ bewertet als Non-Clickbait-Schlagzeilen.",
 #ggsave("Semantisches Differenzial Politik.jpeg")
 ```
 
-
-
 #Semantisches Differenzial Kultur
-```{r echo=FALSE}
+```{r Semantisches Differenzial Kultur, echo=FALSE}
 dfcult <- tibble::tribble(
             ~Personen, ~sd1_sz5, ~sd2_sz5, ~sd3_sz5, ~sd4_sz5, ~sd5_sz5, ~sd6_sz5, ~sd7_sz5, ~sd1_sz6, ~sd2_sz6, ~sd3_sz6, ~sd4_sz6, ~sd5_sz6, ~sd6_sz6, ~sd7_sz6, ~sd1_sz9, ~sd2_sz9, ~sd3_sz9, ~sd4_sz9, ~sd5_sz9, ~sd6_sz9, ~sd7_sz9, ~sd1_sz10, ~sd2_sz10, ~sd3_sz10, ~sd4_sz10, ~sd5_sz10, ~sd6_sz10, ~sd7_sz10, ~sd1_sz12, ~sd2_sz12, ~sd3_sz12, ~sd4_sz12, ~sd5_sz12, ~sd6_sz12, ~sd7_sz12,
                     1,        5,        3,        3,        3,        4,        5,        3,        5,        3,        4,        3,        2,        4,        2,        4,        3,        3,        4,        1,        5,        4,         5,         2,         4,         3,         1,         5,         5,         5,         4,         4,         4,         2,         5,         5,
@@ -731,7 +676,6 @@ dfcult <- tibble::tribble(
                   121,        5,        5,        5,        5,        5,        4,        5,        3,        1,        1,        2,        2,        2,        2,        3,        3,        3,        3,        2,        4,        3,         5,         5,         5,         5,         5,         5,         5,         3,         3,         3,         5,         5,         5,         4
             )
 
-
 dfcult_1 <- dfcult %>% pivot_longer(cols = starts_with("sd")) %>% 
    separate(col = name, into = c("name", "Schlagzeile"), sep = "_")
 ## Recoding dfpol_1$name into dfpol_1$name_rec
@@ -775,144 +719,172 @@ bewertet als Non-Clickbait-Schlagzeilen.",
 ```
 
 #Semantisches Differenzial Wirtschaft
-```{r dataframe Schlagzeilen, eval=FALSE, include=FALSE}
-df_sz <- tibble::tribble(
-  ~Personen, ~head_1, ~head_3, ~head_4, ~head_2, ~head_5, ~head_6, ~head_7, ~head_8, ~head_9, ~head_10, ~head_11, ~head_12,
-          1,       0,       0,       0,       0,       0,       0,       1,       0,       1,        1,        1,        0,
-          2,       1,       1,       1,       0,       0,       1,       1,       1,       1,        0,        0,        1,
-          3,       1,       0,       1,       1,       0,       1,       1,       0,       1,        0,        0,        0,
-          4,       1,       1,       1,       1,       0,       1,       0,       1,       1,        0,        0,        0,
-          5,       0,       0,       0,       0,       0,       0,       0,       1,       0,        0,        1,        0,
-          6,       1,       1,       0,       1,       0,       0,       0,       1,       1,        0,        0,        0,
-          7,       1,       0,       0,       0,       0,       1,       1,       0,       1,        1,        0,        0,
-          8,       1,       1,       0,       0,       0,       0,       1,       1,       1,        0,        1,        0,
-          9,       1,       0,       1,       1,       0,       0,       1,       1,       1,        0,        1,        1,
-         10,       0,       0,       1,       0,       0,       0,       0,       1,       0,        0,        0,        0,
-         11,       1,       1,       1,       0,       0,       0,       0,       0,       1,        0,        0,        0,
-         12,       1,       1,       1,       0,       1,       1,       1,       0,       0,        0,        0,        1,
-         13,       0,       1,       1,       1,       0,       0,       1,       0,       1,        0,        0,        1,
-         14,       1,       0,       1,       0,       0,       0,       1,       0,       1,        0,        0,        0,
-         15,       1,       1,       0,       0,       0,       0,       1,       1,       0,        0,        0,        0,
-         16,       1,       0,       0,       0,       0,       1,       1,       0,       1,        0,        0,        0,
-         17,       1,       0,       1,       1,       0,       1,       1,       0,       1,        0,        0,        0,
-         18,       0,       0,       1,       1,       0,       0,       1,       0,       0,        0,        1,        0,
-         19,       1,       0,       1,       1,       0,       1,       1,       0,       1,        0,        0,        0,
-         20,       1,       1,       1,       1,       1,       1,       1,       1,       1,        1,        1,        1,
-         21,       0,       0,       1,       0,       0,       0,       1,       0,       1,        0,        0,        0,
-         22,       0,       1,       1,       0,       0,       0,       1,       0,       1,        0,        1,        0,
-         23,       1,       0,       0,       0,       0,       0,       1,       1,       1,        0,        0,        0,
-         24,       1,       0,       1,       1,       0,       1,       1,       1,       1,        0,        0,        0,
-         25,       1,       0,       1,       0,       0,       1,       1,       0,       1,        0,        0,        0,
-         26,       1,       1,       1,       0,       0,       1,       0,       1,       1,        0,        0,        0,
-         27,       0,       1,       1,       0,       0,       1,       1,       0,       1,        0,        0,        0,
-         28,       1,       1,       1,       1,       0,       1,       1,       0,       1,        0,        0,        0,
-         29,       1,       0,       1,       0,       0,       1,       1,       0,       1,        0,        0,        0,
-         30,       0,       0,       1,       0,       0,       1,       1,       1,       0,        0,        0,        1,
-         31,       1,       0,       1,       1,       0,       1,       1,       1,       1,        0,        1,        0,
-         32,       1,       1,       1,       0,       0,       1,       1,       0,       1,        0,        1,        0,
-         33,       1,       1,       1,       1,       0,       1,       1,       1,       1,        0,        0,        0,
-         34,       0,       0,       0,       0,       0,       1,       1,       1,       0,        1,        0,        1,
-         35,       1,       1,       0,       0,       0,       0,       1,       0,       1,        0,        0,        0,
-         36,       0,       1,       0,       1,       0,       1,       0,       1,       0,        0,        1,        0,
-         37,       1,       1,       1,       1,       0,       1,       1,       1,       1,        0,        0,        0,
-         38,       1,       1,       1,       0,       0,       1,       1,       1,       0,        0,        1,        0,
-         39,       0,       1,       1,       1,       0,       1,       1,       1,       0,        0,        0,        1,
-         40,       1,       1,       1,       1,       0,       1,       1,       1,       1,        0,        0,        0,
-         41,       1,       1,       1,       0,       0,       0,       1,       1,       1,        0,        0,        1,
-         42,       1,       1,       0,       0,       0,       0,       0,       1,       0,        0,        1,        0,
-         43,       1,       1,       1,       1,       0,       1,       0,       1,       1,        0,        0,        0,
-         44,       1,       1,       0,       1,       0,       1,       1,       1,       1,        1,        0,        1,
-         45,       1,       1,       0,       0,       0,       1,       1,       0,       1,        0,        0,        0,
-         46,       0,       1,       0,       1,       0,       0,       0,       1,       0,        1,        0,        0,
-         47,       1,       0,       1,       0,       0,       1,       0,       0,       0,        0,        0,        0,
-         48,       1,       1,       0,       1,       1,       1,       0,       1,       0,        1,        1,        1,
-         49,       1,       0,       1,       1,       0,       1,       1,       1,       1,        0,        0,        0,
-         50,       1,       1,       1,       0,       0,       1,       0,       0,       1,        0,        0,        0,
-         51,       1,       1,       1,       0,       0,       1,       1,       1,       1,        0,        0,        0,
-         52,       1,       1,       1,       1,       0,       1,       0,       0,       1,        0,        0,        0,
-         53,       1,       0,       1,       1,       0,       1,       1,       0,       1,        0,        0,        0,
-         54,       1,       0,       1,       0,       0,       1,       1,       0,       1,        0,        1,        0,
-         55,       1,       1,       1,       0,       0,       0,       1,       0,       1,        0,        0,        0,
-         56,       0,       1,       1,       1,       0,       1,       1,       1,       1,        0,        0,        0,
-         57,       1,       0,       1,       0,       0,       1,       1,       0,       1,        0,        0,        0,
-         58,       0,       0,       1,       1,       1,       1,       1,       1,       0,        0,        1,        0,
-         59,       1,       1,       1,       0,       0,       1,       1,       1,       0,        0,        0,        1,
-         60,       1,       1,       1,       0,       0,       1,       1,       1,       1,        0,        0,        1,
-         61,       1,       0,       1,       1,       0,       1,       1,       1,       1,        0,        1,        0,
-         62,       0,       1,       1,       1,       0,       1,       1,       1,       1,        0,        0,        0,
-         63,       0,       1,       1,       1,       0,       1,       1,       1,       1,        0,        0,        0,
-         64,       1,       0,       0,       0,       0,       0,       1,       0,       0,        0,        0,        0,
-         65,       1,       0,       1,       1,       0,       1,       0,       1,       1,        1,        0,        0,
-         66,       1,       1,       1,       1,       0,       1,       0,       0,       1,        0,        0,        0,
-         67,       1,       0,       0,       0,       0,       1,       0,       1,       0,        0,        1,        1,
-         68,       1,       0,       1,       0,       0,       1,       1,       1,       0,        1,        0,        1,
-         69,       0,       0,       1,       0,       0,       0,       0,       0,       1,        1,        0,        0,
-         70,       1,       0,       1,       1,       0,       1,       1,       1,       1,        0,        1,        0,
-         71,       0,       0,       0,       0,       0,       0,       0,       0,       1,        0,        0,        0,
-         72,       0,       1,       0,       0,       0,       1,       1,       1,       1,        0,        0,        0,
-         73,       0,       0,       0,       0,       0,       0,       0,       1,       0,        0,        0,        0,
-         74,       1,       0,       1,       1,       0,       1,       1,       1,       0,        0,        0,        0,
-         75,       1,       0,       1,       0,       0,       1,       1,       0,       1,        0,        0,        0,
-         76,       1,       0,       1,       0,       0,       0,       1,       1,       0,        0,        0,        0,
-         77,       1,       1,       1,       0,       0,       1,       1,       1,       1,        0,        0,        0,
-         78,       1,       0,       0,       0,       1,       1,       1,       1,       1,        1,        0,        0,
-         79,       0,       0,       1,       1,       0,       1,       1,       1,       1,        0,        1,        1,
-         80,       1,       0,       1,       0,       0,       1,       1,       1,       1,        0,        0,        0,
-         81,       1,       0,       1,       1,       0,       1,       0,       1,       1,        0,        0,        0,
-         82,       1,       1,       0,       1,       0,       0,       1,       0,       1,        0,        0,        0,
-         83,       0,       0,       1,       1,       0,       0,       1,       1,       0,        1,        0,        0,
-         84,       1,       0,       1,       0,       0,       1,       1,       0,       1,        0,        0,        0,
-         85,       0,       0,       0,       1,       0,       0,       1,       1,       1,        0,        1,        0,
-         86,       0,       1,       0,       0,       0,       0,       1,       1,       1,        1,        1,        0,
-         87,       1,       0,       1,       0,       0,       0,       0,       1,       1,        0,        0,        0,
-         88,       1,       0,       1,       1,       0,       1,       1,       0,       1,        0,        0,        0,
-         89,       0,       0,       1,       1,       0,       0,       1,       1,       0,        0,        0,        1,
-         90,       0,       0,       1,       1,       0,       1,       1,       0,       1,        0,        0,        0,
-         91,       1,       1,       1,       0,       0,       1,       1,       0,       0,        0,        1,        0,
-         92,       1,       1,       0,       0,       0,       1,       0,       1,       1,        1,        1,        1,
-         93,       1,       1,       1,       1,       0,       1,       1,       1,       1,        0,        1,        0,
-         94,       0,       1,       1,       1,       0,       1,       0,       0,       1,        0,        0,        0,
-         95,       1,       1,       1,       1,       0,       1,       1,       1,       1,        0,        0,        0,
-         96,       1,       1,       1,       1,       0,       1,       1,       1,       1,        0,        0,        0,
-         97,       1,       0,       1,       1,       0,       1,       1,       0,       1,        0,        0,        0,
-         98,       1,       1,       1,       0,       0,       1,       1,       0,       1,        0,        0,        0,
-         99,       1,       0,       1,       1,       0,       1,       0,       1,       1,        0,        0,        1,
-        100,       1,       1,       1,       0,       0,       1,       1,       1,       1,        0,        0,        0,
-        101,       0,       0,       0,       1,       0,       1,       1,       0,       1,        1,        1,        0,
-        102,       1,       1,       1,       1,       0,       1,       1,       0,       1,        0,        0,        0,
-        103,       1,       0,       0,       0,       0,       1,       1,       1,       1,        0,        1,        1,
-        104,       1,       0,       1,       0,       0,       1,       0,       0,       1,        0,        0,        0,
-        105,       1,       1,       1,       1,       0,       0,       0,       1,       1,        0,        1,        0,
-        106,       0,       0,       1,       1,       0,       1,       1,       1,       1,        0,        0,        0,
-        107,       1,       1,       1,       1,       0,       0,       1,       1,       1,        0,        1,        0,
-        108,       1,       0,       1,       0,       0,       1,       1,       1,       1,        0,        1,        0,
-        109,       0,       0,       1,       0,       0,       1,       0,       1,       0,        0,        0,        0,
-        110,       1,       0,       1,       0,       0,       1,       0,       0,       1,        0,        1,        0,
-        111,       1,       1,       1,       0,       0,       1,       1,       1,       1,        0,        0,        0,
-        112,       0,       1,       1,       1,       0,       1,       1,       1,       1,        0,        0,        0,
-        113,       1,       1,       1,       1,       0,       1,       0,       0,       1,        0,        0,        0,
-        114,       1,       1,       1,       0,       0,       1,       1,       0,       1,        0,        0,        0,
-        115,       1,       0,       1,       0,       0,       1,       1,       0,       1,        0,        0,        0,
-        116,       1,       0,       1,       1,       0,       1,       1,       0,       0,        1,        1,        0,
-        117,       1,       1,       0,       0,       0,       0,       0,       1,       0,        0,        1,        0,
-        118,       1,       0,       1,       1,       0,       1,       1,       0,       1,        0,        0,        0,
-        119,       1,       0,       1,       1,       0,       1,       1,       1,       1,        0,        1,        0,
-        120,       0,       1,       1,       1,       0,       0,       0,       1,       1,        0,        0,        0,
-        121,       1,       0,       0,       1,       0,       0,       0,       1,       0,        0,        1,        0,
-        122,       1,       1,       1,       1,       0,       1,       0,       1,       1,        0,        0,        0,
-        123,       1,       0,       1,       1,       0,       1,       1,       1,       1,        1,        1,        0
-  )
-
-
-
-```
-
-```{r, raw.short gespeichert als csv Datei}
-#write.csv2(raw.short, "data/raw.short.csv")
+```{r Semantisches Differenzial Wirtschaft, echo=FALSE}
+dfeco <- tibble::tribble(
+           ~Personen, ~sd1_sz2, ~sd2_sz2, ~sd3_sz2, ~sd4_sz2, ~sd5_sz2, ~sd6_sz2, ~sd7_sz2, ~sd1_sz7, ~sd2_sz7, ~sd3_sz7, ~sd4_sz7, ~sd5_sz7, ~sd6_sz7, ~sd7_sz7, ~sd1_sz8, ~sd2_sz8, ~sd3_sz8, ~sd4_sz8, ~sd5_sz8, ~sd6_sz8, ~sd7_sz8, ~sd1_sz11, ~sd2_sz11, ~sd3_sz11, ~sd4_sz11, ~sd5_sz11, ~sd6_sz11, ~sd7_sz11,
+                   1,        1,        2,        1,        3,        1,        1,        1,        1,        1,        1,        2,        1,        1,        1,        1,        2,        1,        2,        1,        1,        1,         2,         2,         1,         3,         1,         1,         2,
+                   2,        2,        3,        2,        4,        4,        2,        2,        2,        2,        2,        3,        4,        4,        2,        3,        4,        4,        4,        4,        2,        3,         2,         3,         4,         4,         4,         2,         3,
+                   3,        3,        4,        4,        3,        4,        2,        3,        2,        3,        3,        4,        4,        2,        3,        2,        4,        4,        3,        3,        1,        2,         2,         3,         5,         4,         3,         2,         4,
+                   4,        5,        5,        5,        5,        5,        2,        4,        5,        5,        5,        5,        4,        3,        5,        4,        5,        5,        3,        2,        2,        3,         4,         4,         4,         5,         4,         2,         4,
+                   5,        3,        3,        4,        3,        3,        3,        4,        3,        4,        4,        4,        3,        3,        4,        2,        3,        3,        2,        2,        2,        3,         3,         4,         4,         4,         4,         3,         2,
+                   6,        4,        5,        5,        3,        5,        2,        4,        5,        5,        4,        5,        3,        1,        3,        2,        5,        4,        2,        4,        2,        4,         5,         5,         5,         5,         3,         2,         5,
+                   7,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        2,        3,        2,        3,        2,        3,        2,         4,         4,         4,         4,         4,         4,         4,
+                   8,        2,        3,        2,        3,        3,        2,        3,        2,        1,        2,        2,        3,        2,        2,        4,        4,        3,        4,        2,        4,        4,         3,         4,         3,         4,         4,         2,         3,
+                   9,        3,        4,        4,        3,        4,        2,        3,        3,        4,        4,        4,        3,        2,        3,        3,        2,        3,        2,        3,        2,        2,         2,         3,         4,         3,         2,         3,         3,
+                  10,        3,        4,        5,        5,        2,        3,        5,        1,        2,        3,        4,        5,        4,        3,        5,        4,        3,        2,        1,        2,        3,         4,         3,         3,         2,         2,         3,         4,
+                  11,        3,        3,        3,        3,        3,        3,        3,        2,        2,        2,        3,        2,        3,        3,        2,        2,        2,        4,        5,        1,        2,         2,         2,         2,         4,         2,         3,         3,
+                  12,        2,        2,        2,        3,        3,        3,        2,        2,        3,        3,        2,        1,        4,        2,        2,        2,        2,        4,        3,        2,        3,         2,         2,         2,         3,         3,         3,         3,
+                  13,        2,        3,        3,        3,        2,        2,        2,        2,        2,        3,        3,        3,        2,        2,        2,        2,        3,        2,        2,        2,        2,         2,         2,         2,         3,         3,         2,         2,
+                  14,        2,        3,        2,        3,        3,        3,        3,        3,        3,        2,        3,        2,        3,        3,        3,        2,        2,        2,        3,        3,        3,         3,         3,         3,         3,         2,         3,         3,
+                  15,        5,        5,        4,        4,        5,        4,        4,        2,        2,        1,        3,        4,        3,        3,        4,        2,        4,        5,        4,        4,        5,         5,         5,         5,         5,         5,         2,         4,
+                  16,        3,        3,        4,        4,        4,        2,        4,        2,        3,        2,        4,        4,        1,        3,        3,        4,        3,        2,        2,        3,        5,         4,         4,         3,         5,         4,         2,         4,
+                  17,        4,        5,        5,        4,        4,        2,        4,        1,        2,        2,        3,        3,        2,        2,        1,        3,        3,        4,        4,        1,        2,         2,         3,         3,         4,         4,         1,         3,
+                  18,        5,        5,        5,        1,        1,        5,        5,        5,        5,        5,        1,        1,        4,        5,        5,        5,        5,        1,        1,        5,        5,         5,         5,         5,         5,         2,         5,         5,
+                  19,        3,        4,        5,        5,        4,        2,        4,        2,        1,        3,        4,        3,        1,        2,        1,        3,        2,        1,        2,        1,        1,         1,         1,         1,         2,         3,         2,         1,
+                  20,        2,        2,        1,        1,        1,        3,        1,        2,        2,        2,        4,        4,        2,        3,        3,        4,        4,        4,        4,        4,        2,         4,         5,         3,         5,         3,         2,         4,
+                  21,        2,        2,        2,        1,        3,        2,        2,        4,        1,        1,        3,        3,        2,        2,        3,        2,        2,        3,        3,        2,        3,         2,         2,         2,         1,         3,         3,         2,
+                  22,        2,        3,        4,        1,        1,        3,        3,        2,        4,        4,        3,        3,        3,        4,        4,        4,        4,        3,        3,        3,        4,         3,         4,         4,         4,         3,         2,         4,
+                  23,        2,        2,        2,        4,        4,        2,        2,        2,        2,        2,        3,        3,        2,        2,        4,        2,        3,        2,        2,        2,        2,         2,         2,         3,         2,         4,         2,         2,
+                  24,        4,        4,        3,        2,        2,        1,        3,        2,        4,        3,        2,        1,        3,        2,        4,        4,        2,        3,        2,        2,        3,         2,         2,         1,         2,         1,         2,         3,
+                  25,        4,        3,        1,        5,        4,        1,        3,        3,        2,        1,        3,        2,        2,        2,        5,        3,        2,        5,        2,        1,        4,         1,         1,         1,         1,         1,         1,         1,
+                  26,        3,        4,        4,        4,        4,        1,        2,        3,        3,        2,        4,        4,        4,        3,        2,        3,        4,        2,        2,        4,        3,         2,         3,         3,         5,         5,         2,         3,
+                  27,        2,        3,        2,        4,        4,        4,        3,        2,        2,        2,        3,        3,        2,        2,        3,        3,        3,        4,        4,        2,        3,         4,         4,         2,         2,         2,         2,         3,
+                  28,        4,        4,        4,        3,        3,        3,        3,        2,        2,        4,        4,        4,        2,        3,        4,        4,        4,        2,        2,        2,        3,         4,         4,         4,         4,         4,         2,         4,
+                  29,        2,        4,        4,        4,        4,        2,        3,        2,        2,        2,        3,        3,        2,        2,        2,        3,        3,        4,        4,        2,        3,         3,         4,         4,         3,         3,         2,         2,
+                  30,        3,        3,        1,        5,        2,        1,        3,        5,        5,        5,        3,        3,        1,        3,        5,        5,        5,        3,        3,        1,        1,         3,         3,         3,         5,         3,         1,         3,
+                  31,        3,        3,        4,        2,        2,        3,        1,        3,        4,        4,        3,        4,        2,        2,        2,        4,        4,        2,        2,        2,        2,         3,         4,         4,         1,         2,         1,         1,
+                  32,        2,        3,        2,        1,        3,        1,        3,        1,        1,        1,        1,        1,        1,        1,        1,        1,        1,        1,        1,        1,        1,         2,         2,         2,         2,         2,         1,         2,
+                  33,        2,        3,        2,        4,        3,        2,        3,        3,        2,        3,        3,        4,        2,        2,        3,        4,        3,        2,        3,        2,        3,         2,         4,         4,         2,         4,         2,         3,
+                  34,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,         2,         2,         2,         2,         2,         2,         2,
+                  35,        1,        4,        5,        3,        1,        2,        3,        4,        4,        4,        3,        2,        2,        2,        3,        2,        2,        1,        1,        1,        1,         5,         5,         5,         1,         1,         1,         3,
+                  36,        4,        3,        4,        2,        1,        3,        1,        5,        2,        4,        2,        4,        3,        3,        4,        2,        4,        2,        3,        3,        3,         4,         2,         3,         3,         4,         3,         2,
+                  37,        5,        5,        5,        5,        1,        5,        5,        3,        3,        5,        5,        3,        4,        4,        5,        4,        4,        4,        4,        3,        3,         3,         4,         4,         4,         2,         3,         3,
+                  38,        4,        5,        5,        5,        4,        2,        3,        4,        3,        4,        3,        4,        3,        3,        2,        4,        4,        2,        2,        3,        3,         4,         5,         1,         1,         3,         5,         3,
+                  39,        2,        2,        3,        4,        4,        2,        3,        3,        2,        2,        3,        4,        2,        3,        2,        3,        4,        2,        3,        3,        2,         2,         4,         4,         3,         3,         4,         4,
+                  40,        5,        5,        4,        3,        4,        2,        2,        3,        4,        4,        2,        2,        2,        2,        3,        2,        4,        4,        2,        2,        2,         2,         4,         4,         3,         3,         2,         2,
+                  41,        4,        4,        4,        5,        3,        1,        3,        3,        3,        4,        4,        3,        2,        3,        2,        2,        2,        4,        3,        2,        4,         2,         3,         4,         4,         1,         2,         3,
+                  42,        5,        5,        5,        5,        5,        1,        2,        4,        4,        4,        3,        3,        2,        3,        4,        4,        4,        3,        3,        1,        2,         3,         3,         4,         5,         5,         4,         4,
+                  43,        5,        5,        5,        5,        5,        4,        4,        5,        5,        5,        5,        5,        5,        5,        3,        4,        2,        2,        1,        3,        3,         4,         5,         4,         4,         4,         2,         3,
+                  44,        3,        4,        5,        5,        3,        2,        4,        2,        3,        3,        2,        3,        5,        1,        4,        4,        4,        3,        1,        2,        3,         4,         5,         4,         2,         1,         2,         4,
+                  45,        3,        3,        3,        2,        4,        4,        2,        1,        1,        1,        1,        1,        5,        2,        1,        1,        1,        1,        1,        5,        3,         1,         3,         3,         5,         4,         3,         5,
+                  46,        4,        4,        4,        5,        4,        2,        4,        4,        2,        4,        3,        3,        2,        3,        5,        5,        4,        2,        3,        3,        3,         2,         3,         1,         2,         2,         2,         3,
+                  47,        4,        4,        4,        2,        2,        3,        2,        4,        4,        4,        4,        4,        2,        4,        3,        3,        4,        3,        2,        2,        3,         4,         4,         3,         3,         2,         2,         3,
+                  48,        4,        4,        3,        2,        3,        2,        4,        2,        2,        2,        1,        4,        2,        2,        2,        4,        4,        2,        2,        3,        4,         4,         4,         2,         2,         2,         4,         3,
+                  49,        2,        3,        4,        3,        4,        2,        3,        2,        2,        3,        3,        3,        2,        2,        2,        2,        4,        2,        3,        1,        2,         2,         4,         4,         4,         4,         2,         3,
+                  50,        4,        4,        4,        5,        4,        3,        3,        4,        4,        4,        2,        3,        2,        3,        4,        4,        4,        2,        4,        2,        3,         3,         4,         4,         2,         4,         2,         3,
+                  51,        2,        4,        4,        2,        2,        1,        2,        2,        4,        3,        2,        2,        3,        2,        2,        4,        2,        2,        2,        1,        2,         2,         3,         2,         1,         1,         1,         1,
+                  52,        4,        4,        5,        5,        4,        3,        4,        4,        5,        3,        2,        2,        3,        3,        2,        4,        4,        2,        2,        3,        3,         2,         2,         2,         1,         1,         2,         2,
+                  53,        1,        1,        1,        1,        1,        1,        3,        2,        3,        2,        2,        2,        4,        3,        2,        2,        3,        2,        2,        3,        3,         1,         1,         1,         1,         1,         1,         1,
+                  54,        5,        4,        4,        2,        2,        3,        3,        2,        4,        4,        2,        2,        2,        2,        1,        4,        4,        3,        3,        2,        2,         2,         4,         3,         4,         4,         2,         2,
+                  55,        5,        5,        5,        3,        3,        5,        5,        5,        4,        5,        3,        4,        5,        5,        1,        3,        4,        4,        4,        5,        2,         4,         4,         5,         3,         3,         5,         3,
+                  56,        5,        5,        5,        5,        5,        5,        5,        5,        4,        3,        4,        4,        5,        3,        5,        5,        5,        5,        1,        5,        5,         3,         4,         4,         3,         2,         2,         3,
+                  57,        3,        3,        3,        5,        4,        1,        1,        1,        1,        2,        4,        4,        2,        2,        3,        3,        3,        3,        3,        2,        2,         1,         1,         1,         4,         3,         1,         1,
+                  58,        4,        4,        3,        4,        3,        2,        4,        1,        1,        1,        2,        2,        1,        1,        3,        3,        2,        4,        4,        2,        3,         2,         4,         4,         4,         4,         2,         4,
+                  59,        3,        3,        3,        3,        3,        3,        3,        2,        2,        2,        1,        2,        4,        3,        2,        2,        2,        2,        2,        1,        3,         3,         3,         3,         3,         2,         2,         3,
+                  60,        4,        5,        4,        4,        2,        2,        4,        3,        4,        4,        3,        4,        3,        3,        4,        4,        4,        3,        3,        3,        4,         4,         4,         4,         5,         4,         3,         4,
+                  61,        2,        4,        4,        5,        5,        2,        3,        4,        4,        4,        5,        5,        5,        4,        1,        2,        2,        4,        4,        2,        2,         5,         5,         5,         5,         5,         5,         5,
+                  62,        4,        4,        4,        3,        3,        1,        1,        2,        2,        2,        3,        3,        3,        3,        3,        4,        4,        4,        3,        2,        3,         3,         3,         3,         2,         3,         3,         3,
+                  63,        4,        4,        4,        5,        4,        4,        3,        2,        3,        3,        4,        4,        4,        3,        2,        4,        4,        2,        2,        4,        3,         5,         5,         5,         5,         5,         5,         5,
+                  64,        4,        4,        4,        4,        4,        2,        4,        3,        3,        3,        3,        3,        2,        4,        3,        2,        2,        4,        3,        2,        2,         1,         1,         1,         1,         1,         1,         1,
+                  65,        4,        5,        5,        4,        4,        2,        3,        3,        4,        4,        4,        4,        3,        3,        3,        4,        3,        3,        3,        3,        3,         4,         5,         5,         5,         4,         2,         4,
+                  66,        4,        4,        4,        4,        3,        2,        3,        2,        5,        5,        4,        4,        3,        3,        3,        4,        4,        2,        2,        2,        3,         2,         2,         2,         2,         2,         2,         3,
+                  67,        2,        3,        3,        3,        2,        2,        1,        2,        2,        1,        2,        4,        2,        2,        1,        1,        2,        2,        3,        2,        2,         3,         4,         4,         4,         3,         5,         4,
+                  68,        2,        3,        4,        2,        2,        1,        2,        2,        2,        4,        2,        1,        3,        2,        4,        4,        5,        3,        1,        4,        3,         3,         5,         4,         4,         3,         1,         2,
+                  69,        5,        3,        4,        3,        1,        1,        4,        3,        1,        1,        1,        5,        1,        3,        5,        1,        3,        5,        5,        4,        3,         5,         5,         5,         5,         1,         5,         5,
+                  70,        3,        4,        5,        4,        4,        2,        3,        3,        2,        2,        4,        4,        4,        3,        4,        4,        2,        3,        4,        2,        3,         3,         2,         4,         2,         1,         1,         2,
+                  71,        1,        1,        1,        3,        3,        2,        2,        2,        2,        2,        3,        3,        3,        2,        2,        2,        2,        3,        3,        2,        3,         1,         1,         1,         3,         3,         2,         2,
+                  72,        3,        3,        3,        2,        3,        2,        2,        1,        2,        2,        2,        2,        2,        2,        2,        2,        3,        1,        1,        2,        2,         2,         3,         3,         3,         2,         2,         3,
+                  73,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,        3,         3,         3,         3,         3,         3,         3,         3,
+                  74,        1,        1,        1,        1,        3,        1,        1,        1,        1,        1,        1,        1,        1,        1,        1,        3,        3,        3,        3,        1,        1,         1,         3,         3,         3,         3,         3,         3,
+                  75,        2,        2,        2,        3,        3,        1,        2,        2,        4,        4,        3,        3,        3,        3,        3,        2,        2,        2,        2,        2,        3,         2,         4,         4,         2,         2,         2,         3,
+                  76,        2,        4,        4,        5,        4,        2,        3,        2,        4,        4,        2,        3,        3,        2,        2,        4,        3,        3,        2,        2,        4,         1,         2,         2,         3,         4,         1,         2,
+                  77,        1,        2,        3,        2,        4,        2,        2,        4,        5,        5,        5,        3,        2,        4,        3,        1,        4,        4,        4,        1,        4,         4,         4,         4,         3,         1,         2,         5,
+                  78,        4,        4,        4,        2,        2,        4,        3,        1,        1,        1,        2,        3,        3,        1,        4,        4,        3,        2,        3,        3,        3,         3,         3,         3,         2,         2,         4,         2,
+                  79,        2,        4,        4,        5,        4,        4,        4,        5,        5,        3,        5,        5,        5,        5,        2,        3,        3,        2,        2,        3,        3,         5,         5,         5,         5,         2,         5,         5,
+                  80,        1,        2,        2,        4,        3,        2,        2,        2,        4,        4,        5,        4,        3,        2,        2,        4,        4,        3,        2,        3,        2,         1,         2,         2,         2,         2,         2,         2,
+                  81,        4,        3,        4,        5,        4,        4,        4,        2,        4,        3,        4,        3,        2,        2,        2,        4,        5,        2,        2,        2,        2,         4,         4,         3,         3,         2,         3,         4,
+                  82,        4,        4,        4,        4,        4,        3,        5,        3,        3,        3,        3,        3,        3,        3,        2,        2,        2,        2,        2,        2,        2,         5,         5,         3,         5,         5,         4,         5,
+                  83,        4,        4,        3,        3,        3,        2,        3,        3,        3,        3,        3,        3,        4,        2,        3,        3,        2,        3,        3,        2,        3,         3,         5,         4,         3,         3,         2,         5,
+                  84,        4,        4,        4,        2,        3,        4,        3,        4,        3,        4,        4,        4,        4,        3,        2,        4,        4,        3,        3,        3,        3,         3,         4,         2,         4,         3,         1,         4,
+                  85,        4,        4,        4,        4,        4,        2,        4,        3,        4,        3,        4,        4,        2,        4,        3,        4,        4,        4,        5,        2,        4,         4,         5,         4,         3,         4,         2,         4,
+                  86,        4,        4,        3,        4,        5,        2,        3,        2,        2,        2,        5,        4,        2,        3,        4,        2,        4,        2,        2,        4,        4,         2,         4,         5,         5,         5,         1,         3,
+                  87,        4,        5,        5,        4,        4,        3,        5,        5,        5,        5,        5,        3,        2,        3,        3,        5,        5,        5,        1,        5,        5,         3,         5,         5,         5,         3,         3,         5,
+                  88,        2,        4,        4,        2,        2,        3,        3,        3,        2,        2,        3,        4,        4,        3,        3,        4,        4,        4,        4,        3,        3,         2,         3,         3,         2,         2,         3,         2,
+                  89,        3,        2,        3,        2,        3,        4,        3,        5,        4,        3,        2,        1,        2,        4,        1,        2,        4,        4,        2,        2,        2,         4,         2,         3,         4,         2,         3,         5,
+                  90,        5,        5,        5,        5,        5,        2,        5,        2,        4,        4,        4,        2,        2,        3,        3,        3,        3,        4,        4,        5,        3,         5,         4,         2,         5,         4,         3,         4,
+                  91,        2,        2,        2,        3,        3,        2,        2,        2,        2,        2,        3,        3,        2,        2,        2,        2,        2,        4,        3,        1,        2,         3,         2,         2,         3,         3,         2,         2,
+                  92,        4,        2,        3,        3,        2,        4,        2,        4,        4,        3,        2,        2,        2,        3,        2,        2,        2,        2,        3,        2,        2,         2,         4,         4,         2,         3,         2,         3,
+                  93,        2,        2,        2,        4,        3,        4,        3,        2,        3,        4,        4,        3,        4,        2,        3,        3,        4,        2,        2,        4,        3,         4,         4,         4,         2,         2,         3,         2,
+                  94,        1,        1,        4,        2,        2,        2,        2,        3,        3,        4,        4,        4,        4,        4,        2,        2,        3,        3,        3,        3,        3,         1,         1,         4,         2,         1,         2,         2,
+                  95,        4,        4,        3,        4,        3,        4,        3,        4,        4,        3,        4,        3,        5,        3,        4,        4,        3,        3,        3,        5,        3,         4,         4,         5,         5,         3,         5,         4,
+                  96,        2,        4,        5,        5,        2,        3,        4,        1,        2,        2,        4,        4,        2,        2,        1,        2,        2,        2,        3,        2,        4,         2,         3,         1,         4,         1,         2,         2,
+                  97,        3,        4,        5,        2,        2,        1,        4,        1,        4,        5,        4,        5,        1,        3,        2,        2,        4,        4,        4,        3,        5,         3,         5,         4,         2,         2,         3,         3,
+                  98,        4,        4,        4,        4,        4,        2,        3,        2,        3,        4,        4,        4,        2,        3,        3,        4,        4,        2,        2,        2,        3,         3,         3,         3,         3,         3,         3,         3,
+                  99,        2,        3,        2,        1,        1,        3,        2,        3,        4,        4,        2,        4,        3,        2,        2,        4,        4,        1,        1,        2,        3,         3,         4,         3,         2,         3,         1,         3,
+                 100,        4,        3,        4,        5,        5,        2,        5,        3,        5,        5,        4,        4,        4,        3,        3,        4,        5,        5,        4,        2,        4,         1,         1,         1,         1,         1,         2,         5,
+                 101,        5,        5,        5,        4,        4,        3,        3,        4,        4,        4,        4,        4,        3,        3,        3,        5,        5,        5,        4,        1,        3,         4,         4,         5,         5,         5,         4,         5,
+                 102,        2,        4,        3,        4,        3,        2,        3,        1,        2,        1,        2,        2,        1,        2,        3,        3,        2,        2,        1,        3,        3,         2,         1,         1,         1,         2,         2,         2,
+                 103,        3,        4,        4,        5,        4,        2,        3,        3,        2,        3,        4,        4,        4,        2,        5,        3,        4,        4,        3,        4,        4,         2,         4,         4,         5,         3,         2,         3,
+                 104,        2,        2,        3,        5,        4,        3,        2,        3,        2,        2,        5,        5,        3,        3,        1,        1,        2,        4,        4,        2,        2,         2,         2,         2,         3,         2,         2,         2,
+                 105,        2,        4,        4,        4,        3,        1,        2,        3,        4,        4,        5,        5,        2,        5,        2,        4,        4,        3,        3,        1,        2,         2,         4,         4,         4,         4,         1,         3,
+                 106,        4,        4,        4,        3,        2,        3,        2,        3,        4,        4,        2,        3,        3,        2,        4,        2,        3,        2,        5,        4,        2,         4,         4,         4,         1,         2,         3,         3,
+                 107,        3,        4,        4,        4,        3,        4,        4,        2,        2,        3,        4,        4,        3,        3,        4,        4,        4,        4,        3,        4,        4,         5,         4,         4,         5,         4,         5,         5,
+                 108,        4,        4,        5,        4,        4,        2,        3,        2,        3,        3,        2,        3,        2,        3,        3,        3,        4,        4,        2,        2,        4,         4,         5,         5,         4,         2,         2,         4,
+                 109,        1,        1,        1,        1,        1,        1,        1,        2,        1,        1,        1,        1,        1,        1,        3,        3,        3,        3,        3,        2,        4,         2,         2,         2,         2,         2,         2,         2,
+                 110,        3,        5,        5,        5,        5,        1,        3,        5,        5,        5,        5,        5,        4,        4,        1,        2,        2,        5,        4,        2,        2,         1,         4,         4,         5,         2,         2,         2,
+                 111,        5,        2,        4,        5,        5,        2,        4,        2,        2,        1,        2,        4,        1,        2,        2,        4,        2,        3,        3,        3,        3,         2,         5,         5,         5,         3,         1,         3,
+                 112,        4,        2,        4,        4,        1,        3,        3,        4,        4,        4,        2,        2,        3,        3,        2,        2,        2,        2,        2,        2,        2,         2,         4,         4,         4,         4,         2,         3,
+                 113,        5,        4,        4,        4,        2,        4,        3,        3,        3,        3,        1,        2,        3,        2,        2,        3,        3,        2,        2,        2,        2,         3,         4,         2,         1,         2,         3,         3,
+                 114,        2,        2,        3,        3,        4,        4,        3,        2,        2,        2,        2,        3,        2,        2,        2,        3,        3,        4,        4,        3,        3,         2,         3,         2,         1,         2,         2,         2,
+                 115,        3,        3,        4,        4,        4,        3,        2,        4,        4,        4,        4,        3,        3,        3,        3,        3,        4,        2,        1,        3,        2,         4,         4,         4,         5,         2,         2,         4,
+                 116,        2,        3,        3,        3,        4,        2,        3,        3,        2,        2,        4,        3,        3,        3,        2,        2,        2,        3,        3,        2,        3,         2,         5,         5,         5,         3,         3,         4,
+                 117,        2,        3,        3,        3,        2,        1,        2,        2,        2,        2,        3,        3,        1,        2,        2,        4,        3,        3,        3,        1,        3,         5,         5,         4,         5,         5,         4,         4,
+                 118,        4,        5,        5,        5,        5,        2,        4,        3,        2,        3,        5,        4,        2,        3,        2,        3,        3,        4,        3,        3,        4,         3,         4,         4,         4,         2,         1,         4,
+                 119,        4,        4,        3,        2,        2,        2,        3,        2,        1,        1,        4,        3,        2,        3,        4,        2,        2,        3,        1,        3,        3,         4,         5,         4,         3,         3,         2,         4,
+                 120,        3,        2,        3,        4,        3,        1,        3,        2,        2,        4,        3,        3,        3,        3,        4,        4,        4,        3,        2,        2,        3,         5,         4,         4,         4,         3,         3,         4,
+                 121,        4,        4,        5,        3,        4,        3,        3,        4,        5,        5,        4,        4,        2,        3,        2,        3,        3,        3,        4,        2,        3,         2,         3,         2,         2,         3,         2,         2,
+                 122,        3,        3,        3,        3,        3,        3,        2,        4,        4,        4,        3,        3,        4,        4,        4,        3,        3,        3,        3,        3,        3,         4,         5,         4,         3,         3,         4,         3,
+                 123,        5,        5,        5,        4,        4,        4,        4,        5,        5,        5,        4,        3,        3,        4,        3,        4,        4,        4,        4,        4,        4,         3,         5,         5,         5,         4,         4,         5
+           )
+dfeco_1 <- dfeco %>% pivot_longer(cols = starts_with("sd")) %>% 
+   separate(col = name, into = c("name", "Schlagzeile"), sep = "_")
+## Recoding dfpol_1$name into dfpol_1$name_rec
+dfeco_1$name_rec <- fct_recode(dfeco_1$name,
+               "Informativ" = "sd1",
+               "Klar" = "sd2",
+               "Eindeutig" = "sd3",
+               "Nüchtern" = "sd4",
+               "Emotionslos" = "sd5",
+               "Interessant" = "sd6",
+               "Seriös" = "sd7")
+## Recoding dfpol_1$Einstellung into dfpol_1$Einstellung_rec
+dfeco_1$Schlagzeile <- fct_recode(dfeco_1$Schlagzeile,
+              "Clickbait Gates Energiewunder" = "sz2",
+              "Non-Clickbait Dienstwagen" = "sz7", 
+              "Clickbait Raketen" = "sz8",
+               "Clickbait WhatsApp Verbot" = "sz11")
+  
+dfeco_1 %>%   
+ggplot()+
+  aes(x = as.numeric(name_rec), y = value, group = Schlagzeile
+, color = Schlagzeile) +
+  stat_summary(fun.data = "mean_se", position = my_dodge) +
+  stat_summary(fun.data = "mean_se", geom ="line", position = my_dodge)+
+  scale_y_continuous(limits = c(1,5), breaks = 1:6, name = "Bewertung")+
+  scale_x_continuous(name = "Dimension", breaks = 1:7, labels = labelslinks,
+                     sec.axis = sec_axis(~.,
+                                         breaks = 1:7,
+                                         labels = labelsrechts))+
+  labs (title = "Clickbait- und Non-Clickbait-Schlagzeilen aus dem Themengebiet 
+Wirtschaft werden gleich bewertet.",
+        caption = "n = 123",
+        subtitle = "Semantisches Differenzial zu der Bewertung von Online-Schlagzeilen ")+
+  coord_flip()
+#ggsave("Semantisches Differenzial Wirtschaft.jpeg")
 ```
 
 #DataCleaning beenden
-```{r, DataCleaning beenden}
+```{r Bereinigte Daten, include=FALSE}
 datensatz <- datensatz %>% 
   select (-starts_with("Big"),
           -starts_with("Schlagzeile"),
@@ -924,11 +896,13 @@ datensatz <- datensatz %>%
 ```
 
 #Deskriptive Statistik
-```{r,Deskritptive Statistik}
+```{r Deskriptive Statistik, echo=FALSE, warning=FALSE}
 
 
 
 describe(datensatz)
+
+
 
 #Altersverteilung
 datensatz$Gender_rec <- fct_recode(datensatz$Gender,
@@ -946,7 +920,8 @@ labs (x= "Alter", y = "Häufigkeit", fill = "Geschlecht", title = "Verteilung de
 
 ggplot(datensatz) +
  aes(x = Ausbildung) +
-  labs (y = "Anzahl der Probanden", title = "Der Großteil der Probanden hat einen Studienabschluss", caption = "n = 121")+
+  labs (y = "Anzahl der Probanden", title = "Der Großteil der Probanden hat 
+einen Studienabschluss.", caption = "n = 121")+
  geom_bar(fill = "#0c4c8a") +
  theme_minimal()+
   coord_flip()
@@ -957,7 +932,7 @@ ggplot(datensatz) +
 ```
 
 #Inferenzstatistik
-```{r, Hypothesentests}
+```{r Inferenzstatistik}
 
 
 #Summierte Themenzuordnung
@@ -976,9 +951,6 @@ cor.test(data = datensatz, ~Age+score_c)
 cor.test(data= datensatz, ~Age+score_nc)
 
 
-
-
-
 #H2: Es gibt einen Unterschied zwischen Männern und Frauen in der Erkennung von Clickbait-Schlagzeilen.
 
 ## Recoding datensatz$Gender into datensatz$Gender_rec
@@ -990,7 +962,6 @@ t.test(datensatz$score_c~datensatz$Gender_rec)
 t.test(datensatz$score_nc~datensatz$Gender_rec)
 
 
-
 describe(filter (datensatz, Gender_rec == "Männlich")$score_c)
 
 describe(filter(datensatz, Gender_rec == "Weiblich")$score_c)
@@ -998,7 +969,6 @@ describe(filter(datensatz, Gender_rec == "Weiblich")$score_c)
 
 
 corrMatrix(datensatz, vars = c("Age", "bfio", "bfic", "bfie", "bfia", "bfin", "skills", "score", "score_nc", "score_c"), pearson = TRUE)
-
 
 
 #H3:Es gibt einen Zusammenhang zwischen den Fähigkeiten im Umgang mit Online-Medien/Technik (InternetSkillScale) und der Erkennung von Non-Clickbait-Schlagzeilen.
@@ -1011,7 +981,7 @@ cor.test(data = datensatz, ~score_c+skills)
 cor.test(data = datensatz, ~ score+skills)
 
 
-##Zusammenhangshypothese 4
+##H4: Es gibt einen Zusammenhang zwischen den Persönlichkeitsfaktoren (BIG5) und der Erkennung von Clickbait-Schlagzeilen. 
 
 cor.test(data = datensatz, ~score_c + bfio)
 cor.test(data = datensatz, ~score_c + bfic)
@@ -1031,31 +1001,33 @@ cor.test(data = datensatz, ~score + bfie)
 cor.test(data = datensatz, ~score + bfia)
 cor.test(data = datensatz, ~score + bfin)
 
-##H5
+##H5: Es gibt einen Zusammenhang zwischen der richtigen Themenzuordnung und der Bewertung der Schlagzeilen.
 
 cor.test(data = datensatz, ~score_c + sd_c)
 cor.test(data = datensatz, ~score_nc + sd_nc)
 cor.test(data = datensatz, ~score + sd_all)
 
 
+
 ```
 #Visualisierungen
-```{r, Visualisierungen }
+```{r Visualisierungen, echo=FALSE}
 #Zu H1
 
 ggscatter(datensatz, x = "Age", y = "score", 
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",
-          xlab = "Alter", ylab = "Korrekte Themenzuordnung", title = "Es gibt keinen Zusammenhang zwischen der korrekten Themenzuordnung und 
-dem Alter.", caption = "n = 119") +
+          xlab = "Alter", ylab = "Korrekte Themenzuordnung", title = "Es gibt keinen signifikanten Zusammenhang zwischen dem Alter und 
+der korrekten Themenzuordnung.", caption = "n = 119") +
   geom_jitter()
 
 #ggsave("Zusammenhang_h1_gesamt.jpeg")
 
-ggscatter(datensatz, x = "Age", y = "score", 
+ggscatter(datensatz, x = "Age", y = "score_c", 
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",
-          xlab = "Alter", ylab = "Korrekte Themenzuordnung zu C-Schlagzeilen", title = "Es gibt keinen signifikanten Zusammenhang zwischen dem Alter un der Erkennung von Clickbait-Schlagzeilen.", caption = "n = 119") +
+          xlab = "Alter", ylab = "Korrekte Themenzuordnung zu C-Schlagzeilen", title = "Es gibt keinen signifikanten Zusammenhang zwischen dem Alter 
+und der Erkennung von Clickbait-Schlagzeilen.", caption = "n = 119") +
   geom_jitter()
 
 #ggsave("Kein Zusammenhang Age Clickbait H1.jpeg")
@@ -1063,7 +1035,7 @@ ggscatter(datensatz, x = "Age", y = "score",
 #Zu H2
 
 ggplot(datensatz) +
- aes(x = Gender_rec, y = score) +
+ aes(x = Gender_rec, y = score_c) +
  geom_boxplot(fill = "#0c4c8a") +
   labs (x = "Geschlecht", y = "Korrekte Themenzuordnung", title = "Es gibt keinen Unterschied in der korrekten Themenzuordnung zwischen 
 Männern und Frauen.", caption = "n = 121")+
@@ -1076,25 +1048,30 @@ Männern und Frauen.", caption = "n = 121")+
 ggscatter(datensatz, x = "skills", y = "score", 
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",
-          xlab = "Internetskills", ylab = "Richtige Themenzuordnung zur Schlagzeile", caption = "n =119") +
+          xlab = "Internetskills (1 = niedrig, 6 = hoch)", ylab = "Richtige Themenzuordnung zur Schlagzeile", caption = "n =119", title = "Es besteht ein signifikanter Zusammenhang zwischen den Fähigkeiten im 
+Umgang mit Online-Medien und Technik und der 
+korrekten Themenzuordnung.") +
   geom_jitter()
 
- ggsave("Zusammenhang Scores gesamt und Skills.jpeg", width = 8, height = 6)
+#ggsave("Zusammenhang Scores gesamt und Skills.jpeg", width = 8, height = 6)
  
 ggscatter(datensatz, x = "skills", y = "score_nc", 
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",
-          xlab = "Internetskills", ylab = "Richtige Themenzuordnung zu NC-Schlagzeilen", caption = "n =119") +
+          xlab = "Internetskills (1 = niedrig, 6 = hoch)", ylab = "Richtige Themenzuordnung zu NC-Schlagzeilen", caption = "n =119", title = "Es besteht ein signifikanter Zusammenhang zwischen den Fähigkeiten 
+im Umgang mit Online-Medien und Technik und der Erkennung 
+von Non-Clickbait-Schlagzeilen.") +
   geom_jitter()
  
-# ggsave("Zusammenhang Scores NC und Skills.jpeg", width = 8, height = 6)
+#ggsave("Zusammenhang Scores NC und Skills.jpeg", width = 8, height = 6)
 
 
 #Zu H5
 ggscatter(datensatz, x = "score_nc", y = "sd_nc", 
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",
-          xlab = "Themenzuordnung Non-Clickbait", ylab = "Bewertung Non-Clickbait (1 = positiv, 5 = negativ)")+
+          xlab = "Themenzuordnung Non-Clickbait", ylab = "Bewertung Non-Clickbait (1 = positiv, 5 = negativ)", title = "Es besteht ein signifikanter Zusammenhang zwischen der Bewertung von 
+NC-Schlagzeilen und der richtigen Themenzuordnung.")+
   geom_jitter()
 
 #ggsave("Zusammenhang_h5_Non-Clickbait.jpeg", width = 8, height = 6)
@@ -1102,7 +1079,8 @@ ggscatter(datensatz, x = "score_nc", y = "sd_nc",
 ggscatter(datensatz, x = "score_c", y = "sd_c", 
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",
-          xlab = "Themenzuordnung Clickbait", ylab = "Bewertung Clickbait (1 = positiv, 5 = negativ)")+
+          xlab = "Themenzuordnung Clickbait", ylab = "Bewertung Clickbait (1 = positiv, 5 = negativ)", title = "Es besteht ein signifikanter Zusammenhang zwischen der Bewertung von 
+C-Schlagzeilen und der richtigen Themenzuordnung.")+
   geom_jitter()
 
 #ggsave("Zusammenhang_h5_Clickbait.jpeg", width = 8, height = 6)
@@ -1111,20 +1089,24 @@ ggscatter(datensatz, x = "score_c", y = "sd_c",
 
 #Ergebnisse
 ##Zusammenhangshypothese 1
-
-Es besteht kein signifikanter Zusammenhang zwischen dem Alter und der Erkennung von Clickbait-Schlagzeilen (r(121) =.07, p = .94)
+Es besteht kein signifikanter Zusammenhang zwischen dem Alter und der Erkennung von Clickbait-Schlagzeilen (r = (121) =.05, p = .55). Das Alter der Probanden steht demnach nicht in Zusammenhang mit der korrekten Zuordnung der Themeninhalte durch die Probanden.
 
 ##Unterschiedshypothese 2
-Es besteht kein Unterschied zwischen Männern und Frauen in der Erkennung von Clickbait-Schlagzeilen (t(112.36) = .68, p =.49).
+In der Stichprobe konnte kein signifikanter Unterschied zwischen Männern und Frauen in der Erkennung von Clickbait-Schlagzeilen (t (116.16) = -.32, p = .75) oder Non-Clickbait-Schlagzeilen festgestellt werden (t (118.67) = 1.27, p = .21). 
 
 ##Zusammenhangshypothese 3
-Es besteht ein signifikanter positiver Zusammenhang zwischen den Internetfähigkeiten der Probanden und der Themenzuordnung zu den Schlagzeilen (r(121) = .26, p = .004**). Je geübter die Probanden im Umgang mit dem Internet sind, desto eher ordnen sie den richtigen Artikelinhalt der gegebenen Schlagzeile zu.
+Es besteht ein signifikanter, schwach positiver Zusammenhang zwischen den Fähigkeiten im Umgang mit Online-Medien und Technik (ISS) und der Erkennung von Non-Clickbait-Schlagzeilen (r(121) = .22, p = .01). Personen, die geübter im Umgang mit Online-Medien und Technik sind, ordnen den Non-Clickbait-Schlagzeilen demnach eher den richtigen Themeninhalt zu. Ebenso kann dieser Zusammenhang in Bezug auf die kumulierte Bewertung aller Schlagzeilen festgestellt werden (r (121) = .26, p = .004). Je höher die Fähigkeiten im Umgang mit Online-Medien und Technik sind, desto eher ordnen die Probanden den gesamten Schlagzeilen den richtigen Themeninhalt zu.
 
-##Zu H3
-Es besteht ein signifikanter positiver Zusammenhang zwischen den Internetfähigkeiten der Probanden und der Themenzuordnung zu den Non-Clickbait-Schlagzeilen (r(121) = .22, p = .01**). Je geübter die Probanden im Umgang mit dem Internet sind, desto eher ordnen sie den richtigen Artikelinhalt der gegebenen Non-Clickbait-Schlagzeile zu. 
+##Zusammenhangshypothese 4
 
+Es besteht kein signifikanter Zusammenhang zwischen den Persönlihckeitsfaktoren nach Big 5 und der Erkennung von Clickbait-Schlagzeilen. Die einzelnen Persönlichkeitsfaktoren Offenheit (r (119) = -.09 p = .32), Gewissenhaftigkeit (r (119) = -.01, p = .92), Extraversion (r (119) = -.04, p = .68), Verträglichkeit (r (119) = -.04, p = .67) und Neurotizismus (r (119) = -.1, p = .28) korrelieren nicht, bis maximal sehr schwach, allerdings nicht signifikant mit der Erkennung von Clickbait-Schlagzeilen. 
 
-```{r}
+##Zusammenhangsyhypothese 5
+
+Die Ergebnisse zeigen, dass sowohl zwischen der richtigen Themenzuordnung und der Bewertung der Non-Clickbait-Schlagzeilen (r (119) = -.35, p <.001) als auch zwischen der richtigen Themenzuordnung und der Bewertung von Clickbait-Schlagzeilen (r (119) = .30, p <.001) ein signifikanter Zusammenhang besteht. Bezüglich der Non-Clickbait-Schlagzeilen ist ein negativer Zusammenhang festzustellen. Je positiver die Schlagzeilen bewertet werden, desto eher ordnen die Probanden ebendiesen den richtigen Themeninhalt zu. Auffälliger sind allerdings die Ergebnisse der Clickbait-Schlagzeilen. Dabei ist ein positiver Zusammenhang festzustellen. Je negativer die Clickbait-Schlagzeilen bewertet werden, desto eher ordnen die Probanden den Schlagzeilen den richtigen Themeninhalt zu. 
+
+#Weiterführende Untersuchungen
+```{r Weiterführende Untersuchungen}
 mean(datensatz$AnteilClickbait_1)
 sd(datensatz$AnteilClickbait_1)
 
@@ -1138,41 +1120,3 @@ waren. (M = 7.3, SD = 1.6)", caption = "n= 121")+
 
 #ggsave("Grafik Anteil Clickbait.jpeg")
 ```
-
-## 
-
-
-```{r pressure, echo=FALSE}
-cor.test(data = datensatz, ~sd_c+score_c)
-cor.test(data = datensatz, ~sd_nc+score_nc)
-
-
-
-library(ggplot2)
-
-ggplot(datensatz) +
- aes(x = score_nc, y = sd_nc) +
-  labs(x = "Anzahl der richtigen Themenzuordnung der Non-Clickbait Schlagzeilen", y = "Bewertung der Non-Clickbait-Schlagzeilen (1 = positiv, 
-       5 = negativ)", title = "Es gibt einen negativen Zusammenhang zwischen der Bewertung und der 
-richtigen Themenzuordnung von NC-Schlagzeilen.", caption = "n = 121")+
- geom_point() +
- theme_minimal()+
-  geom_jitter()
-
-#ggsave("Zusammenhang Bewertung und Korrektheit NC.jpeg")
-
-
-ggplot(datensatz) +
- aes(x = score_c, y = sd_c) +
-  labs ( x = "Anzahl der richtigen Themenzuordnung der Clickbait-Schlagzeilen", y = "Bewertung der Clickbait-Schlagzeilen (1 = positiv,
-         5 = negativ)", title = "Es gibt einen Zusammenhang zwischen der Bewertung und der richtigen 
-Themenzuordnung von Clickbait-Schlagzeilen.", caption = "n = 121")+
- geom_point() +
- theme_minimal()+
-  geom_jitter()
-
-#ggsave("Zusammenhang Bewertung und Korrektheit C.jpeg")
-
-
-```
-

@@ -1,0 +1,1708 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Analyse Clickbait},
+            pdfauthor={Fabian Comanns, Peter GÃ¶dde, Nicole Herbolt, Insa Menzel},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Analyse Clickbait}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Fabian Comanns, Peter GÃ¶dde, Nicole Herbolt, Insa Menzel}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+    \date{}
+    \predate{}\postdate{}
+  
+
+\begin{document}
+\maketitle
+
+Im Rahmen des Seminars ``Usability, User Diversity und
+Technikakzeptanz'' im Wintersemester 2019/2020 an der RWTH Aachen
+University hat sich der Kurs unter der Leitung von Dr.~André
+Calero-Valdez mit dem Themengebiet ``Mis- und Desinformationen im
+Internet'' beschäftigt. Nach eingehender Beschäftigung mit verschiedenen
+Forschungszweigen hat sich die Gruppe, bestehend aus den oben genannten
+Autoren, dafür entschieden, den Fokus auf den Forschungszweig
+``Clickbait'' zu legen. Daraus hat sich folgende Forschungsfrage
+entwickelt:
+
+\emph{Welchen Einfluss haben Nutzerfaktoren auf die Erkennung von
+Clickbait-Schlagzeilen in Online-Medien?}
+
+Dieses Dokument zeigt die Datenbereinigung, -aufbereitung und
+-auswertung hinsichtlich der Hypothesen, die dazu dienen, die
+übergeordnete Forschungsfrage zu beantworten. Am Ende des Dokuments
+werden die Ergebnisse kurz erläutert und weiterführende
+Untersuchungsaspekte genannt, die im Anschluss an diese Analyse
+interessant sein könnten.
+
+\section{Daten laden und bereinigen}\label{daten-laden-und-bereinigen}
+
+\section{Kategoriale und numerische Variablen
+generieren}\label{kategoriale-und-numerische-variablen-generieren}
+
+\section{Schlagzeilen Werte zuordnen}\label{schlagzeilen-werte-zuordnen}
+
+\section{Skalenbenennung}\label{skalenbenennung}
+
+\section{Skalenberechnung}\label{skalenberechnung}
+
+\section{Faktorenzuweisung}\label{faktorenzuweisung}
+
+\begin{verbatim}
+##  head_1  head_2  head_3  head_4  head_5  head_6  head_7  head_8  head_9 
+##      ""      ""      ""      ""      ""      ""      ""      ""      "" 
+## head_10 head_11 head_12 
+##      ""      ""      ""
+\end{verbatim}
+
+\begin{verbatim}
+## Call: psych::scoreItems(keys = head_keys, items = raw.short, min = 0, 
+##     max = 1)
+## 
+## (Unstandardized) Alpha:
+##        pol cult  eco
+## alpha 0.15 0.16 0.16
+## 
+## Standard errors of unstandardized Alpha:
+##        pol cult  eco
+## ASE   0.15 0.12 0.13
+## 
+## Average item correlation:
+##             pol  cult   eco
+## average.r 0.056 0.038 0.046
+## 
+## Median item correlation:
+##    pol   cult    eco 
+## 0.0601 0.0999 0.0092 
+## 
+##  Guttman 6* reliability: 
+##           pol cult  eco
+## Lambda.6 0.26 0.33 0.25
+## 
+## Signal/Noise based upon av.r : 
+##               pol cult  eco
+## Signal/Noise 0.18  0.2 0.19
+## 
+## Scale intercorrelations corrected for attenuation 
+##  raw correlations below the diagonal, alpha on the diagonal 
+##  corrected correlations above the diagonal:
+##         pol cult   eco
+## pol   0.152 1.17 -0.36
+## cult  0.185 0.16  1.07
+## eco  -0.056 0.18  0.16
+## 
+##  In order to see the item by scale loadings and frequency counts of the data
+##  print with the short option = FALSE
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 121 x 135
+##    Gender   Age Ausbildung BeruflTaetigkeit BigFive10_1 BigFive10_2
+##    <fct>  <dbl> <ord>      <chr>            <ord>       <ord>      
+##  1 Männl…    19 Fachabitu… Student          Trifft ehe… Trifft vol…
+##  2 Weibl…    22 Fachabitu… Studentin        Trifft ehe… Trifft ehe…
+##  3 Männl…    22 Studienab… Student          Trifft ehe… Trifft ehe…
+##  4 Männl…    31 Berufsaus… Konstrukteur     Trifft nic… Trifft zu  
+##  5 Weibl…    26 Studienab… Studentin        Trifft ehe… Trifft ehe…
+##  6 Weibl…    23 Fachabitu… Studentin        Trifft nic… Trifft ehe…
+##  7 Männl…    24 Studienab… Student          Trifft übe… Trifft ehe…
+##  8 Weibl…    25 Studienab… Freier Mitarbei… Trifft ehe… Trifft ehe…
+##  9 Weibl…    24 Studienab… Studentin mit N… Trifft übe… Trifft zu  
+## 10 Weibl…    21 Fachabitu… Student          Trifft ehe… Trifft ehe…
+## # … with 111 more rows, and 129 more variables: BigFive10_3 <ord>,
+## #   BigFive10_4 <ord>, BigFive10_5 <ord>, BigFive10_6 <ord>,
+## #   BigFive10_7 <ord>, BigFive10_8 <ord>, BigFive10_9 <ord>,
+## #   BigFive10_10 <ord>, InternetSkillScale_1 <ord>,
+## #   InternetSkillScale_2 <ord>, InternetSkillScale_3 <ord>,
+## #   InternetSkillScale_4 <ord>, InternetSkillScale_5 <ord>,
+## #   InternetSkillScale_6 <ord>, InternetSkillScale_7 <ord>,
+## #   InternetSkillScale_8 <ord>, Schlagzeile2 <chr>,
+## #   Schlagzeile2SemDiff_1 <ord>, Schlagzeile2SemDiff_2 <ord>,
+## #   Schlagzeile2SemDiff_3 <ord>, Schlagzeile2SemDiff_4 <ord>,
+## #   Schlagzeile2SemDiff_5 <ord>, Schlagzeile2SemDiff_6 <ord>,
+## #   Schlagzeile2SemDiff_7 <ord>, Schlagzeile3 <chr>,
+## #   Schlagzeile3SemDiff_1 <ord>, Schlagzeile3SemDiff_2 <ord>,
+## #   Schlagzeile3SemDiff_3 <ord>, Schlagzeile3SemDiff_4 <ord>,
+## #   Schlagzeile3SemDiff_5 <ord>, Schlagzeile3SemDiff_6 <ord>,
+## #   Schlagzeile3SemDiff_7 <ord>, Schlagzeile4 <chr>,
+## #   Schlagzeile4SemDiff_1 <ord>, Schlagzeile4SemDiff_2 <ord>,
+## #   Schlagzeile4SemDiff_3 <ord>, Schlagzeile4SemDiff_4 <ord>,
+## #   Schlagzeile4SemDiff_5 <ord>, Schlagzeile4SemDiff_6 <ord>,
+## #   Schlagzeile4SemDiff_7 <ord>, Schlagzeile1 <chr>,
+## #   Schlagzeile1SemDiff_1 <ord>, Schlagzeile1SemDiff_2 <ord>,
+## #   Schlagzeile1SemDiff_3 <ord>, Schlagzeile1SemDiff_4 <ord>,
+## #   Schlagzeile1SemDiff_5 <ord>, Schlagzeile1SemDiff_6 <ord>,
+## #   Schlagzeile1SemDiff_7 <ord>, Schlagzeile5 <chr>,
+## #   Schlagzeile5SemDiff_1 <ord>, Schlagzeile5SemDiff_2 <ord>,
+## #   Schlagzeile5SemDiff_3 <ord>, Schlagzeile5SemDiff_4 <ord>,
+## #   Schlagzeile5SemDiff_5 <ord>, Schlagzeile5SemDiff_6 <ord>,
+## #   Schlagzeile5SemDiff_7 <ord>, Schlagzeile6 <chr>,
+## #   Schlagzeile6SemDiff_1 <ord>, Schlagzeile6SemDiff_2 <ord>,
+## #   Schlagzeile6SemDiff_3 <ord>, Schlagzeile6SemDiff_4 <ord>,
+## #   Schlagzeile6SemDiff_5 <ord>, Schlagzeile6SemDiff_6 <ord>,
+## #   Schlagzeile6SemDiff_7 <ord>, Schlagzeile7 <chr>,
+## #   Schlagzeile7SemDiff_1 <ord>, Schlagzeile7SemDiff_2 <ord>,
+## #   Schlagzeile7SemDiff_3 <ord>, Schlagzeile7SemDiff_4 <ord>,
+## #   Schlagzeile7SemDiff_5 <ord>, Schlagzeile7SemDiff_6 <ord>,
+## #   Schlagzeile7SemDiff_7 <ord>, Schlagzeile8 <chr>,
+## #   Schlagzeile8SemDiff_1 <ord>, Schlagzeile8SemDiff_2 <ord>,
+## #   Schlagzeile8SemDiff_3 <ord>, Schlagzeile8SemDiff_4 <ord>,
+## #   Schlagzeile8SemDiff_5 <ord>, Schlagzeile8SemDiff_6 <ord>,
+## #   Schlagzeile8SemDiff_7 <ord>, Schlagzeile9 <chr>,
+## #   Schlagzeile9SemDiff_1 <ord>, Schlagzeile9SemDiff_2 <ord>,
+## #   Schlagzeile9SemDiff_3 <ord>, Schlagzeile9SemDiff_4 <ord>,
+## #   Schlagzeile9SemDiff_5 <ord>, Schlagzeile9SemDiff_6 <ord>,
+## #   Schlagzeile9SemDiff_7 <ord>, Schlagzeile10 <chr>,
+## #   Schlagzeile10SemDiff_1 <ord>, Schlagzeile10SemDiff_2 <ord>,
+## #   Schlagzeile10SemDiff_3 <ord>, Schlagzeile10SemDiff_4 <ord>,
+## #   Schlagzeile10SemDiff_5 <ord>, Schlagzeile10SemDiff_6 <ord>,
+## #   Schlagzeile10SemDiff_7 <ord>, Schlagzeile11 <chr>,
+## #   Schlagzeile11SemDiff_1 <ord>, Schlagzeile11SemDiff_2 <ord>,
+## #   Schlagzeile11SemDiff_3 <ord>, …
+\end{verbatim}
+
+\begin{verbatim}
+##  BigFive10_1  BigFive10_2  BigFive10_3  BigFive10_4  BigFive10_5 
+##           ""           ""           ""           ""           "" 
+##  BigFive10_6  BigFive10_7  BigFive10_8  BigFive10_9 BigFive10_10 
+##           ""           ""           ""           ""           ""
+\end{verbatim}
+
+\begin{verbatim}
+## Call: psych::scoreItems(keys = bfi_keys, items = raw.short_1, impute = "median", 
+##     min = 1, max = 6)
+## 
+## (Unstandardized) Alpha:
+##       bfio bfic bfie bfia bfin
+## alpha 0.64 0.46 0.75  0.2 0.57
+## 
+## Standard errors of unstandardized Alpha:
+##       bfio bfic bfie bfia bfin
+## ASE   0.14 0.16 0.13 0.18 0.15
+## 
+## Average item correlation:
+##           bfio bfic bfie bfia bfin
+## average.r 0.47  0.3  0.6 0.11  0.4
+## 
+## Median item correlation:
+## bfio bfic bfie bfia bfin 
+## 0.47 0.31 0.60 0.11 0.40 
+## 
+##  Guttman 6* reliability: 
+##          bfio bfic bfie bfia bfin
+## Lambda.6 0.52  0.4 0.67 0.22 0.48
+## 
+## Signal/Noise based upon av.r : 
+##              bfio bfic bfie bfia bfin
+## Signal/Noise  1.7 0.86    3 0.25  1.3
+## 
+## Scale intercorrelations corrected for attenuation 
+##  raw correlations below the diagonal, alpha on the diagonal 
+##  corrected correlations above the diagonal:
+##        bfio   bfic   bfie   bfia   bfin
+## bfio 0.6358  0.178  0.155  0.403  0.015
+## bfic 0.0969  0.464  0.287 -0.033 -0.189
+## bfie 0.1070  0.169  0.752  0.029 -0.516
+## bfia 0.1436 -0.010  0.011  0.199 -0.068
+## bfin 0.0093 -0.097 -0.336 -0.023  0.566
+## 
+##  In order to see the item by scale loadings and frequency counts of the data
+##  print with the short option = FALSE
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 121 x 140
+##    Gender   Age Ausbildung BeruflTaetigkeit BigFive10_1 BigFive10_2
+##    <fct>  <dbl> <ord>      <chr>            <ord>       <ord>      
+##  1 Männl…    19 Fachabitu… Student          Trifft ehe… Trifft vol…
+##  2 Weibl…    22 Fachabitu… Studentin        Trifft ehe… Trifft ehe…
+##  3 Männl…    22 Studienab… Student          Trifft ehe… Trifft ehe…
+##  4 Männl…    31 Berufsaus… Konstrukteur     Trifft nic… Trifft zu  
+##  5 Weibl…    26 Studienab… Studentin        Trifft ehe… Trifft ehe…
+##  6 Weibl…    23 Fachabitu… Studentin        Trifft nic… Trifft ehe…
+##  7 Männl…    24 Studienab… Student          Trifft übe… Trifft ehe…
+##  8 Weibl…    25 Studienab… Freier Mitarbei… Trifft ehe… Trifft ehe…
+##  9 Weibl…    24 Studienab… Studentin mit N… Trifft übe… Trifft zu  
+## 10 Weibl…    21 Fachabitu… Student          Trifft ehe… Trifft ehe…
+## # … with 111 more rows, and 134 more variables: BigFive10_3 <ord>,
+## #   BigFive10_4 <ord>, BigFive10_5 <ord>, BigFive10_6 <ord>,
+## #   BigFive10_7 <ord>, BigFive10_8 <ord>, BigFive10_9 <ord>,
+## #   BigFive10_10 <ord>, InternetSkillScale_1 <ord>,
+## #   InternetSkillScale_2 <ord>, InternetSkillScale_3 <ord>,
+## #   InternetSkillScale_4 <ord>, InternetSkillScale_5 <ord>,
+## #   InternetSkillScale_6 <ord>, InternetSkillScale_7 <ord>,
+## #   InternetSkillScale_8 <ord>, Schlagzeile2 <chr>,
+## #   Schlagzeile2SemDiff_1 <ord>, Schlagzeile2SemDiff_2 <ord>,
+## #   Schlagzeile2SemDiff_3 <ord>, Schlagzeile2SemDiff_4 <ord>,
+## #   Schlagzeile2SemDiff_5 <ord>, Schlagzeile2SemDiff_6 <ord>,
+## #   Schlagzeile2SemDiff_7 <ord>, Schlagzeile3 <chr>,
+## #   Schlagzeile3SemDiff_1 <ord>, Schlagzeile3SemDiff_2 <ord>,
+## #   Schlagzeile3SemDiff_3 <ord>, Schlagzeile3SemDiff_4 <ord>,
+## #   Schlagzeile3SemDiff_5 <ord>, Schlagzeile3SemDiff_6 <ord>,
+## #   Schlagzeile3SemDiff_7 <ord>, Schlagzeile4 <chr>,
+## #   Schlagzeile4SemDiff_1 <ord>, Schlagzeile4SemDiff_2 <ord>,
+## #   Schlagzeile4SemDiff_3 <ord>, Schlagzeile4SemDiff_4 <ord>,
+## #   Schlagzeile4SemDiff_5 <ord>, Schlagzeile4SemDiff_6 <ord>,
+## #   Schlagzeile4SemDiff_7 <ord>, Schlagzeile1 <chr>,
+## #   Schlagzeile1SemDiff_1 <ord>, Schlagzeile1SemDiff_2 <ord>,
+## #   Schlagzeile1SemDiff_3 <ord>, Schlagzeile1SemDiff_4 <ord>,
+## #   Schlagzeile1SemDiff_5 <ord>, Schlagzeile1SemDiff_6 <ord>,
+## #   Schlagzeile1SemDiff_7 <ord>, Schlagzeile5 <chr>,
+## #   Schlagzeile5SemDiff_1 <ord>, Schlagzeile5SemDiff_2 <ord>,
+## #   Schlagzeile5SemDiff_3 <ord>, Schlagzeile5SemDiff_4 <ord>,
+## #   Schlagzeile5SemDiff_5 <ord>, Schlagzeile5SemDiff_6 <ord>,
+## #   Schlagzeile5SemDiff_7 <ord>, Schlagzeile6 <chr>,
+## #   Schlagzeile6SemDiff_1 <ord>, Schlagzeile6SemDiff_2 <ord>,
+## #   Schlagzeile6SemDiff_3 <ord>, Schlagzeile6SemDiff_4 <ord>,
+## #   Schlagzeile6SemDiff_5 <ord>, Schlagzeile6SemDiff_6 <ord>,
+## #   Schlagzeile6SemDiff_7 <ord>, Schlagzeile7 <chr>,
+## #   Schlagzeile7SemDiff_1 <ord>, Schlagzeile7SemDiff_2 <ord>,
+## #   Schlagzeile7SemDiff_3 <ord>, Schlagzeile7SemDiff_4 <ord>,
+## #   Schlagzeile7SemDiff_5 <ord>, Schlagzeile7SemDiff_6 <ord>,
+## #   Schlagzeile7SemDiff_7 <ord>, Schlagzeile8 <chr>,
+## #   Schlagzeile8SemDiff_1 <ord>, Schlagzeile8SemDiff_2 <ord>,
+## #   Schlagzeile8SemDiff_3 <ord>, Schlagzeile8SemDiff_4 <ord>,
+## #   Schlagzeile8SemDiff_5 <ord>, Schlagzeile8SemDiff_6 <ord>,
+## #   Schlagzeile8SemDiff_7 <ord>, Schlagzeile9 <chr>,
+## #   Schlagzeile9SemDiff_1 <ord>, Schlagzeile9SemDiff_2 <ord>,
+## #   Schlagzeile9SemDiff_3 <ord>, Schlagzeile9SemDiff_4 <ord>,
+## #   Schlagzeile9SemDiff_5 <ord>, Schlagzeile9SemDiff_6 <ord>,
+## #   Schlagzeile9SemDiff_7 <ord>, Schlagzeile10 <chr>,
+## #   Schlagzeile10SemDiff_1 <ord>, Schlagzeile10SemDiff_2 <ord>,
+## #   Schlagzeile10SemDiff_3 <ord>, Schlagzeile10SemDiff_4 <ord>,
+## #   Schlagzeile10SemDiff_5 <ord>, Schlagzeile10SemDiff_6 <ord>,
+## #   Schlagzeile10SemDiff_7 <ord>, Schlagzeile11 <chr>,
+## #   Schlagzeile11SemDiff_1 <ord>, Schlagzeile11SemDiff_2 <ord>,
+## #   Schlagzeile11SemDiff_3 <ord>, …
+\end{verbatim}
+
+\begin{verbatim}
+## InternetSkillScale_1 InternetSkillScale_2 InternetSkillScale_3 
+##                   ""                   ""                   "" 
+## InternetSkillScale_4 InternetSkillScale_5 InternetSkillScale_6 
+##                   ""                   ""                   "" 
+## InternetSkillScale_7 InternetSkillScale_8 
+##                   ""                   ""
+\end{verbatim}
+
+\begin{verbatim}
+## Call: psych::scoreItems(keys = skill_keys, items = raw.short_new, impute = "median", 
+##     min = 1, max = 6)
+## 
+## (Unstandardized) Alpha:
+##       skills
+## alpha   0.79
+## 
+## Standard errors of unstandardized Alpha:
+##       skills
+## ASE    0.046
+## 
+## Average item correlation:
+##           skills
+## average.r   0.31
+## 
+## Median item correlation:
+## skills 
+##   0.27 
+## 
+##  Guttman 6* reliability: 
+##          skills
+## Lambda.6   0.81
+## 
+## Signal/Noise based upon av.r : 
+##              skills
+## Signal/Noise    3.7
+## 
+## Scale intercorrelations corrected for attenuation 
+##  raw correlations below the diagonal, alpha on the diagonal 
+##  corrected correlations above the diagonal:
+##        skills
+## skills   0.79
+## 
+##  In order to see the item by scale loadings and frequency counts of the data
+##  print with the short option = FALSE
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 121 x 141
+##    Gender   Age Ausbildung BeruflTaetigkeit BigFive10_1 BigFive10_2
+##    <fct>  <dbl> <ord>      <chr>            <ord>       <ord>      
+##  1 Männl…    19 Fachabitu… Student          Trifft ehe… Trifft vol…
+##  2 Weibl…    22 Fachabitu… Studentin        Trifft ehe… Trifft ehe…
+##  3 Männl…    22 Studienab… Student          Trifft ehe… Trifft ehe…
+##  4 Männl…    31 Berufsaus… Konstrukteur     Trifft nic… Trifft zu  
+##  5 Weibl…    26 Studienab… Studentin        Trifft ehe… Trifft ehe…
+##  6 Weibl…    23 Fachabitu… Studentin        Trifft nic… Trifft ehe…
+##  7 Männl…    24 Studienab… Student          Trifft übe… Trifft ehe…
+##  8 Weibl…    25 Studienab… Freier Mitarbei… Trifft ehe… Trifft ehe…
+##  9 Weibl…    24 Studienab… Studentin mit N… Trifft übe… Trifft zu  
+## 10 Weibl…    21 Fachabitu… Student          Trifft ehe… Trifft ehe…
+## # … with 111 more rows, and 135 more variables: BigFive10_3 <ord>,
+## #   BigFive10_4 <ord>, BigFive10_5 <ord>, BigFive10_6 <ord>,
+## #   BigFive10_7 <ord>, BigFive10_8 <ord>, BigFive10_9 <ord>,
+## #   BigFive10_10 <ord>, InternetSkillScale_1 <ord>,
+## #   InternetSkillScale_2 <ord>, InternetSkillScale_3 <ord>,
+## #   InternetSkillScale_4 <ord>, InternetSkillScale_5 <ord>,
+## #   InternetSkillScale_6 <ord>, InternetSkillScale_7 <ord>,
+## #   InternetSkillScale_8 <ord>, Schlagzeile2 <chr>,
+## #   Schlagzeile2SemDiff_1 <ord>, Schlagzeile2SemDiff_2 <ord>,
+## #   Schlagzeile2SemDiff_3 <ord>, Schlagzeile2SemDiff_4 <ord>,
+## #   Schlagzeile2SemDiff_5 <ord>, Schlagzeile2SemDiff_6 <ord>,
+## #   Schlagzeile2SemDiff_7 <ord>, Schlagzeile3 <chr>,
+## #   Schlagzeile3SemDiff_1 <ord>, Schlagzeile3SemDiff_2 <ord>,
+## #   Schlagzeile3SemDiff_3 <ord>, Schlagzeile3SemDiff_4 <ord>,
+## #   Schlagzeile3SemDiff_5 <ord>, Schlagzeile3SemDiff_6 <ord>,
+## #   Schlagzeile3SemDiff_7 <ord>, Schlagzeile4 <chr>,
+## #   Schlagzeile4SemDiff_1 <ord>, Schlagzeile4SemDiff_2 <ord>,
+## #   Schlagzeile4SemDiff_3 <ord>, Schlagzeile4SemDiff_4 <ord>,
+## #   Schlagzeile4SemDiff_5 <ord>, Schlagzeile4SemDiff_6 <ord>,
+## #   Schlagzeile4SemDiff_7 <ord>, Schlagzeile1 <chr>,
+## #   Schlagzeile1SemDiff_1 <ord>, Schlagzeile1SemDiff_2 <ord>,
+## #   Schlagzeile1SemDiff_3 <ord>, Schlagzeile1SemDiff_4 <ord>,
+## #   Schlagzeile1SemDiff_5 <ord>, Schlagzeile1SemDiff_6 <ord>,
+## #   Schlagzeile1SemDiff_7 <ord>, Schlagzeile5 <chr>,
+## #   Schlagzeile5SemDiff_1 <ord>, Schlagzeile5SemDiff_2 <ord>,
+## #   Schlagzeile5SemDiff_3 <ord>, Schlagzeile5SemDiff_4 <ord>,
+## #   Schlagzeile5SemDiff_5 <ord>, Schlagzeile5SemDiff_6 <ord>,
+## #   Schlagzeile5SemDiff_7 <ord>, Schlagzeile6 <chr>,
+## #   Schlagzeile6SemDiff_1 <ord>, Schlagzeile6SemDiff_2 <ord>,
+## #   Schlagzeile6SemDiff_3 <ord>, Schlagzeile6SemDiff_4 <ord>,
+## #   Schlagzeile6SemDiff_5 <ord>, Schlagzeile6SemDiff_6 <ord>,
+## #   Schlagzeile6SemDiff_7 <ord>, Schlagzeile7 <chr>,
+## #   Schlagzeile7SemDiff_1 <ord>, Schlagzeile7SemDiff_2 <ord>,
+## #   Schlagzeile7SemDiff_3 <ord>, Schlagzeile7SemDiff_4 <ord>,
+## #   Schlagzeile7SemDiff_5 <ord>, Schlagzeile7SemDiff_6 <ord>,
+## #   Schlagzeile7SemDiff_7 <ord>, Schlagzeile8 <chr>,
+## #   Schlagzeile8SemDiff_1 <ord>, Schlagzeile8SemDiff_2 <ord>,
+## #   Schlagzeile8SemDiff_3 <ord>, Schlagzeile8SemDiff_4 <ord>,
+## #   Schlagzeile8SemDiff_5 <ord>, Schlagzeile8SemDiff_6 <ord>,
+## #   Schlagzeile8SemDiff_7 <ord>, Schlagzeile9 <chr>,
+## #   Schlagzeile9SemDiff_1 <ord>, Schlagzeile9SemDiff_2 <ord>,
+## #   Schlagzeile9SemDiff_3 <ord>, Schlagzeile9SemDiff_4 <ord>,
+## #   Schlagzeile9SemDiff_5 <ord>, Schlagzeile9SemDiff_6 <ord>,
+## #   Schlagzeile9SemDiff_7 <ord>, Schlagzeile10 <chr>,
+## #   Schlagzeile10SemDiff_1 <ord>, Schlagzeile10SemDiff_2 <ord>,
+## #   Schlagzeile10SemDiff_3 <ord>, Schlagzeile10SemDiff_4 <ord>,
+## #   Schlagzeile10SemDiff_5 <ord>, Schlagzeile10SemDiff_6 <ord>,
+## #   Schlagzeile10SemDiff_7 <ord>, Schlagzeile11 <chr>,
+## #   Schlagzeile11SemDiff_1 <ord>, Schlagzeile11SemDiff_2 <ord>,
+## #   Schlagzeile11SemDiff_3 <ord>, …
+\end{verbatim}
+
+\begin{verbatim}
+## Call: psych::scoreItems(keys = keylist_semdiff, items = raw.short, 
+##     min = 1, max = 5)
+## 
+## (Unstandardized) Alpha:
+##        sz1  sz2  sz3  sz4  sz5  sz6  sz7  sz8  sz9 sz10 sz11 sz12
+## alpha 0.82 0.81 0.84 0.88 0.77 0.79 0.83 0.67 0.77 0.79 0.85 0.81
+## 
+## Standard errors of unstandardized Alpha:
+##         sz1   sz2   sz3   sz4  sz5   sz6   sz7   sz8   sz9  sz10  sz11
+## ASE   0.044 0.045 0.041 0.036 0.05 0.048 0.043 0.063 0.051 0.048 0.039
+##        sz12
+## ASE   0.044
+## 
+## Average item correlation:
+##            sz1  sz2  sz3 sz4  sz5  sz6  sz7  sz8  sz9 sz10 sz11 sz12
+## average.r 0.39 0.38 0.43 0.5 0.32 0.35 0.41 0.22 0.32 0.35 0.46 0.39
+## 
+## Median item correlation:
+##  sz1  sz2  sz3  sz4  sz5  sz6  sz7  sz8  sz9 sz10 sz11 sz12 
+## 0.43 0.34 0.48 0.55 0.25 0.34 0.36 0.26 0.38 0.39 0.48 0.40 
+## 
+##  Guttman 6* reliability: 
+##           sz1  sz2  sz3  sz4  sz5  sz6  sz7  sz8  sz9 sz10 sz11 sz12
+## Lambda.6 0.97 0.96 0.97 0.97 0.96 0.96 0.97 0.93 0.95 0.96 0.97 0.96
+## 
+## Signal/Noise based upon av.r : 
+##              sz1 sz2 sz3 sz4 sz5 sz6 sz7 sz8 sz9 sz10 sz11 sz12
+## Signal/Noise 4.5 4.3 5.3 7.1 3.4 3.8 4.8   2 3.3  3.7  5.9  4.4
+## 
+## Scale intercorrelations corrected for attenuation 
+##  raw correlations below the diagonal, alpha on the diagonal 
+##  corrected correlations above the diagonal:
+##         sz1    sz2  sz3    sz4    sz5    sz6   sz7  sz8  sz9   sz10 sz11
+## sz1   0.819  0.379 0.28  0.623 -0.022  0.216 0.352 0.38 0.37  0.023 0.47
+## sz2   0.310  0.813 0.59  0.102  0.435 -0.030 0.635 0.59 0.31  0.593 0.47
+## sz3   0.233  0.488 0.84  0.232  0.371  0.163 0.492 0.51 0.30  0.582 0.42
+## sz4   0.528  0.087 0.20  0.877 -0.059  0.555 0.039 0.13 0.41 -0.100 0.35
+## sz5  -0.017  0.345 0.30 -0.049  0.771  0.098 0.330 0.40 0.31  0.766 0.41
+## sz6   0.174 -0.024 0.13  0.462  0.077  0.790 0.138 0.17 0.32  0.150 0.30
+## sz7   0.290  0.521 0.41  0.033  0.264  0.112 0.828 0.52 0.28  0.315 0.43
+## sz8   0.283  0.431 0.38  0.100  0.287  0.122 0.388 0.67 0.36  0.513 0.45
+## sz9   0.293  0.248 0.24  0.334  0.242  0.248 0.225 0.26 0.77  0.389 0.43
+## sz10  0.019  0.475 0.47 -0.083  0.597  0.119 0.254 0.37 0.30  0.789 0.42
+## sz11  0.395  0.395 0.36  0.307  0.335  0.243 0.366 0.34 0.35  0.346 0.85
+## sz12  0.019  0.315 0.52 -0.012  0.557  0.221 0.210 0.16 0.24  0.563 0.26
+##        sz12
+## sz1   0.024
+## sz2   0.386
+## sz3   0.631
+## sz4  -0.014
+## sz5   0.703
+## sz6   0.276
+## sz7   0.255
+## sz8   0.219
+## sz9   0.302
+## sz10  0.702
+## sz11  0.315
+## sz12  0.815
+## 
+##  In order to see the item by scale loadings and frequency counts of the data
+##  print with the short option = FALSE
+\end{verbatim}
+
+\begin{verbatim}
+## # A tibble: 121 x 153
+##    Gender   Age Ausbildung BeruflTaetigkeit BigFive10_1 BigFive10_2
+##    <fct>  <dbl> <ord>      <chr>            <ord>       <ord>      
+##  1 Männl…    19 Fachabitu… Student          Trifft ehe… Trifft vol…
+##  2 Weibl…    22 Fachabitu… Studentin        Trifft ehe… Trifft ehe…
+##  3 Männl…    22 Studienab… Student          Trifft ehe… Trifft ehe…
+##  4 Männl…    31 Berufsaus… Konstrukteur     Trifft nic… Trifft zu  
+##  5 Weibl…    26 Studienab… Studentin        Trifft ehe… Trifft ehe…
+##  6 Weibl…    23 Fachabitu… Studentin        Trifft nic… Trifft ehe…
+##  7 Männl…    24 Studienab… Student          Trifft übe… Trifft ehe…
+##  8 Weibl…    25 Studienab… Freier Mitarbei… Trifft ehe… Trifft ehe…
+##  9 Weibl…    24 Studienab… Studentin mit N… Trifft übe… Trifft zu  
+## 10 Weibl…    21 Fachabitu… Student          Trifft ehe… Trifft ehe…
+## # … with 111 more rows, and 147 more variables: BigFive10_3 <ord>,
+## #   BigFive10_4 <ord>, BigFive10_5 <ord>, BigFive10_6 <ord>,
+## #   BigFive10_7 <ord>, BigFive10_8 <ord>, BigFive10_9 <ord>,
+## #   BigFive10_10 <ord>, InternetSkillScale_1 <ord>,
+## #   InternetSkillScale_2 <ord>, InternetSkillScale_3 <ord>,
+## #   InternetSkillScale_4 <ord>, InternetSkillScale_5 <ord>,
+## #   InternetSkillScale_6 <ord>, InternetSkillScale_7 <ord>,
+## #   InternetSkillScale_8 <ord>, Schlagzeile2 <chr>,
+## #   Schlagzeile2SemDiff_1 <ord>, Schlagzeile2SemDiff_2 <ord>,
+## #   Schlagzeile2SemDiff_3 <ord>, Schlagzeile2SemDiff_4 <ord>,
+## #   Schlagzeile2SemDiff_5 <ord>, Schlagzeile2SemDiff_6 <ord>,
+## #   Schlagzeile2SemDiff_7 <ord>, Schlagzeile3 <chr>,
+## #   Schlagzeile3SemDiff_1 <ord>, Schlagzeile3SemDiff_2 <ord>,
+## #   Schlagzeile3SemDiff_3 <ord>, Schlagzeile3SemDiff_4 <ord>,
+## #   Schlagzeile3SemDiff_5 <ord>, Schlagzeile3SemDiff_6 <ord>,
+## #   Schlagzeile3SemDiff_7 <ord>, Schlagzeile4 <chr>,
+## #   Schlagzeile4SemDiff_1 <ord>, Schlagzeile4SemDiff_2 <ord>,
+## #   Schlagzeile4SemDiff_3 <ord>, Schlagzeile4SemDiff_4 <ord>,
+## #   Schlagzeile4SemDiff_5 <ord>, Schlagzeile4SemDiff_6 <ord>,
+## #   Schlagzeile4SemDiff_7 <ord>, Schlagzeile1 <chr>,
+## #   Schlagzeile1SemDiff_1 <ord>, Schlagzeile1SemDiff_2 <ord>,
+## #   Schlagzeile1SemDiff_3 <ord>, Schlagzeile1SemDiff_4 <ord>,
+## #   Schlagzeile1SemDiff_5 <ord>, Schlagzeile1SemDiff_6 <ord>,
+## #   Schlagzeile1SemDiff_7 <ord>, Schlagzeile5 <chr>,
+## #   Schlagzeile5SemDiff_1 <ord>, Schlagzeile5SemDiff_2 <ord>,
+## #   Schlagzeile5SemDiff_3 <ord>, Schlagzeile5SemDiff_4 <ord>,
+## #   Schlagzeile5SemDiff_5 <ord>, Schlagzeile5SemDiff_6 <ord>,
+## #   Schlagzeile5SemDiff_7 <ord>, Schlagzeile6 <chr>,
+## #   Schlagzeile6SemDiff_1 <ord>, Schlagzeile6SemDiff_2 <ord>,
+## #   Schlagzeile6SemDiff_3 <ord>, Schlagzeile6SemDiff_4 <ord>,
+## #   Schlagzeile6SemDiff_5 <ord>, Schlagzeile6SemDiff_6 <ord>,
+## #   Schlagzeile6SemDiff_7 <ord>, Schlagzeile7 <chr>,
+## #   Schlagzeile7SemDiff_1 <ord>, Schlagzeile7SemDiff_2 <ord>,
+## #   Schlagzeile7SemDiff_3 <ord>, Schlagzeile7SemDiff_4 <ord>,
+## #   Schlagzeile7SemDiff_5 <ord>, Schlagzeile7SemDiff_6 <ord>,
+## #   Schlagzeile7SemDiff_7 <ord>, Schlagzeile8 <chr>,
+## #   Schlagzeile8SemDiff_1 <ord>, Schlagzeile8SemDiff_2 <ord>,
+## #   Schlagzeile8SemDiff_3 <ord>, Schlagzeile8SemDiff_4 <ord>,
+## #   Schlagzeile8SemDiff_5 <ord>, Schlagzeile8SemDiff_6 <ord>,
+## #   Schlagzeile8SemDiff_7 <ord>, Schlagzeile9 <chr>,
+## #   Schlagzeile9SemDiff_1 <ord>, Schlagzeile9SemDiff_2 <ord>,
+## #   Schlagzeile9SemDiff_3 <ord>, Schlagzeile9SemDiff_4 <ord>,
+## #   Schlagzeile9SemDiff_5 <ord>, Schlagzeile9SemDiff_6 <ord>,
+## #   Schlagzeile9SemDiff_7 <ord>, Schlagzeile10 <chr>,
+## #   Schlagzeile10SemDiff_1 <ord>, Schlagzeile10SemDiff_2 <ord>,
+## #   Schlagzeile10SemDiff_3 <ord>, Schlagzeile10SemDiff_4 <ord>,
+## #   Schlagzeile10SemDiff_5 <ord>, Schlagzeile10SemDiff_6 <ord>,
+## #   Schlagzeile10SemDiff_7 <ord>, Schlagzeile11 <chr>,
+## #   Schlagzeile11SemDiff_1 <ord>, Schlagzeile11SemDiff_2 <ord>,
+## #   Schlagzeile11SemDiff_3 <ord>, …
+\end{verbatim}
+
+\begin{verbatim}
+## Call: psych::scoreItems(keys = sd_group, items = datensatz_raw, min = 1, 
+##     max = 5)
+## 
+## (Unstandardized) Alpha:
+##       sd_c sd_nc sd_all
+## alpha 0.82  0.64   0.82
+## 
+## Standard errors of unstandardized Alpha:
+##        sd_c sd_nc sd_all
+## ASE   0.044 0.076  0.035
+## 
+## Average item correlation:
+##           sd_c sd_nc sd_all
+## average.r 0.39  0.26   0.27
+## 
+## Median item correlation:
+##   sd_c  sd_nc sd_all 
+##   0.37   0.27   0.28 
+## 
+##  Guttman 6* reliability: 
+##          sd_c sd_nc sd_all
+## Lambda.6 0.84  0.71   0.86
+## 
+## Signal/Noise based upon av.r : 
+##              sd_c sd_nc sd_all
+## Signal/Noise  4.5   1.8    4.5
+## 
+## Scale intercorrelations corrected for attenuation 
+##  raw correlations below the diagonal, alpha on the diagonal 
+##  corrected correlations above the diagonal:
+##        sd_c sd_nc sd_all
+## sd_c   0.82  0.62   1.12
+## sd_nc  0.45  0.64   1.06
+## sd_all 0.92  0.77   0.82
+## 
+##  In order to see the item by scale loadings and frequency counts of the data
+##  print with the short option = FALSE
+\end{verbatim}
+
+\begin{verbatim}
+## Call: psych::scoreItems(keys = sdressort_keys, items = datensatz, min = 1, 
+##     max = 5)
+## 
+## (Unstandardized) Alpha:
+##       sd_pol sd_cult sd_eco
+## alpha   0.56     0.7   0.73
+## 
+## Standard errors of unstandardized Alpha:
+##       sd_pol sd_cult sd_eco
+## ASE     0.11   0.068  0.075
+## 
+## Average item correlation:
+##           sd_pol sd_cult sd_eco
+## average.r    0.3    0.32    0.4
+## 
+## Median item correlation:
+##  sd_pol sd_cult  sd_eco 
+##    0.23    0.24    0.39 
+## 
+##  Guttman 6* reliability: 
+##          sd_pol sd_cult sd_eco
+## Lambda.6   0.69    0.76   0.73
+## 
+## Signal/Noise based upon av.r : 
+##              sd_pol sd_cult sd_eco
+## Signal/Noise    1.3     2.3    2.6
+## 
+## Scale intercorrelations corrected for attenuation 
+##  raw correlations below the diagonal, alpha on the diagonal 
+##  corrected correlations above the diagonal:
+##         sd_pol sd_cult sd_eco
+## sd_pol    0.56    0.63   0.83
+## sd_cult   0.39    0.70   0.72
+## sd_eco    0.53    0.52   0.73
+## 
+##  In order to see the item by scale loadings and frequency counts of the data
+##  print with the short option = FALSE
+\end{verbatim}
+
+\section{Semantisches Differenzial
+Politik}\label{semantisches-differenzial-politik}
+
+\includegraphics{Analyse_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\section{Semantisches Differenzial
+Kultur}\label{semantisches-differenzial-kultur}
+
+\includegraphics{Analyse_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+\section{Semantisches Differenzial
+Wirtschaft}\label{semantisches-differenzial-wirtschaft}
+
+\includegraphics{Analyse_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#write.csv2(raw.short, "data/raw.short.csv")}
+\end{Highlighting}
+\end{Shaded}
+
+\section{DataCleaning beenden}\label{datacleaning-beenden}
+
+\section{Deskriptive Statistik}\label{deskriptive-statistik}
+
+\begin{verbatim}
+## Warning in describe(datensatz): NAs durch Umwandlung erzeugt
+
+## Warning in describe(datensatz): NAs durch Umwandlung erzeugt
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in FUN(newX[, i], ...): kein nicht-fehlendes Argument für min; gebe
+## Inf zurück
+
+## Warning in FUN(newX[, i], ...): kein nicht-fehlendes Argument für min; gebe
+## Inf zurück
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in FUN(newX[, i], ...): kein nicht-fehlendes Argument für max; gebe
+## -Inf zurück
+
+## Warning in FUN(newX[, i], ...): kein nicht-fehlendes Argument für max; gebe
+## -Inf zurück
+\end{verbatim}
+
+\begin{verbatim}
+##                   vars   n  mean    sd median trimmed  mad   min   max
+## Gender*              1 121  2.54  0.52   3.00    2.56 0.00  1.00  3.00
+## Age                  2 121 28.40 11.97  24.00   25.73 2.97 15.00 73.00
+## Ausbildung*          3 121  4.98  1.20   6.00    5.12 0.00  1.00  6.00
+## BeruflTaetigkeit*    4 121   NaN    NA     NA     NaN   NA   Inf  -Inf
+## AnteilClickbait_1    5 121  7.33  1.62   8.00    7.35 1.48  3.00 12.00
+## Kommentare*          6   7   NaN    NA     NA     NaN   NA   Inf  -Inf
+## head_1               7 121  0.74  0.44   1.00    0.79 0.00  0.00  1.00
+## head_2               8 121  0.50  0.50   0.00    0.49 0.00  0.00  1.00
+## head_3               9 121  0.49  0.50   0.00    0.48 0.00  0.00  1.00
+## head_4              10 121  0.75  0.43   1.00    0.81 0.00  0.00  1.00
+## head_5              11 121  0.04  0.20   0.00    0.00 0.00  0.00  1.00
+## head_6              12 121  0.73  0.45   1.00    0.78 0.00  0.00  1.00
+## head_7              13 121  0.73  0.45   1.00    0.78 0.00  0.00  1.00
+## head_8              14 121  0.60  0.49   1.00    0.62 0.00  0.00  1.00
+## head_9              15 121  0.77  0.42   1.00    0.84 0.00  0.00  1.00
+## head_10             16 121  0.14  0.35   0.00    0.05 0.00  0.00  1.00
+## head_11             17 121  0.28  0.45   0.00    0.23 0.00  0.00  1.00
+## head_12             18 121  0.17  0.37   0.00    0.08 0.00  0.00  1.00
+## pol                 19 121  0.66  0.28   0.67    0.68 0.49  0.00  1.00
+## cult                20 121  0.37  0.18   0.40    0.37 0.00  0.00  1.00
+## eco                 21 121  0.52  0.25   0.50    0.52 0.37  0.00  1.00
+## bfio                22 121  4.10  1.08   4.00    4.12 1.48  1.50  6.00
+## bfic                23 121  4.10  0.90   4.00    4.10 0.74  2.00  6.00
+## bfie                24 121  4.13  1.04   4.00    4.19 0.74  1.00  6.00
+## bfia                25 121  3.90  0.79   4.00    3.92 0.74  2.00  5.50
+## bfin                26 121  3.27  1.06   3.50    3.23 1.48  1.00  6.00
+## skills              27 121  5.10  0.66   5.25    5.19 0.37  2.50  6.00
+## sz1                 28 121  2.29  0.63   2.29    2.27 0.64  1.00  4.00
+## sz2                 29 121  3.17  0.76   3.14    3.19 0.85  1.00  5.00
+## sz3                 30 121  3.45  0.84   3.57    3.47 0.85  1.00  5.00
+## sz4                 31 121  2.20  0.78   2.14    2.16 0.85  1.00  4.43
+## sz5                 32 121  3.83  0.76   3.86    3.89 0.85  1.00  5.00
+## sz6                 33 121  2.81  0.75   2.71    2.80 0.64  1.00  5.00
+## sz7                 34 121  2.94  0.78   3.00    2.93 0.85  1.00  5.00
+## sz8                 35 121  2.86  0.59   2.86    2.86 0.42  1.00  4.43
+## sz9                 36 121  2.90  0.69   2.86    2.91 0.64  1.00  4.57
+## sz10                37 121  3.99  0.74   4.14    4.06 0.64  1.00  5.00
+## sz11                38 121  3.04  0.87   3.00    3.03 0.85  1.00  5.00
+## sz12                39 121  4.01  0.74   4.14    4.07 0.64  1.00  5.00
+## sd_c                40 121  3.48  0.53   3.49    3.49 0.51  1.45  4.53
+## sd_nc               41 121  2.63  0.47   2.63    2.62 0.42  1.31  4.06
+## sd_all              42 121  3.12  0.43   3.11    3.13 0.42  1.39  4.17
+## sd_pol              43 121  2.64  0.55   2.62    2.64 0.49  1.19  4.00
+## sd_cult             44 121  3.51  0.50   3.51    3.53 0.47  1.00  4.46
+## sd_eco              45 121  3.00  0.56   3.00    3.00 0.48  1.39  4.21
+##                   range  skew kurtosis   se
+## Gender*            2.00 -0.33    -1.48 0.05
+## Age               58.00  2.15     3.89 1.09
+## Ausbildung*        5.00 -0.90     0.33 0.11
+## BeruflTaetigkeit*  -Inf    NA       NA   NA
+## AnteilClickbait_1  9.00 -0.18    -0.28 0.15
+## Kommentare*        -Inf    NA       NA   NA
+## head_1             1.00 -1.05    -0.89 0.04
+## head_2             1.00  0.02    -2.02 0.05
+## head_3             1.00  0.05    -2.01 0.05
+## head_4             1.00 -1.15    -0.68 0.04
+## head_5             1.00  4.55    18.88 0.02
+## head_6             1.00 -1.01    -0.99 0.04
+## head_7             1.00 -1.01    -0.99 0.04
+## head_8             1.00 -0.38    -1.87 0.04
+## head_9             1.00 -1.26    -0.42 0.04
+## head_10            1.00  2.04     2.19 0.03
+## head_11            1.00  0.96    -1.08 0.04
+## head_12            1.00  1.78     1.18 0.03
+## pol                1.00 -0.54    -0.28 0.03
+## cult               1.00  0.24     1.35 0.02
+## eco                1.00  0.04    -0.49 0.02
+## bfio               4.50 -0.23    -0.67 0.10
+## bfic               4.00 -0.05    -0.63 0.08
+## bfie               5.00 -0.39    -0.28 0.09
+## bfia               3.50 -0.08    -0.34 0.07
+## bfin               5.00  0.24    -0.60 0.10
+## skills             3.50 -1.55     3.06 0.06
+## sz1                3.00  0.35    -0.17 0.06
+## sz2                4.00 -0.26     0.01 0.07
+## sz3                4.00 -0.30    -0.32 0.08
+## sz4                3.43  0.35    -0.62 0.07
+## sz5                4.00 -0.80     0.68 0.07
+## sz6                4.00  0.23     0.05 0.07
+## sz7                4.00 -0.01     0.21 0.07
+## sz8                3.43 -0.17     0.38 0.05
+## sz9                3.57 -0.07    -0.09 0.06
+## sz10               4.00 -0.96     1.11 0.07
+## sz11               4.00 -0.07    -0.34 0.08
+## sz12               4.00 -0.92     1.05 0.07
+## sd_c               3.08 -0.40     0.64 0.05
+## sd_nc              2.74  0.10     0.17 0.04
+## sd_all             2.77 -0.36     1.06 0.04
+## sd_pol             2.81  0.10    -0.11 0.05
+## sd_cult            3.46 -1.08     3.87 0.05
+## sd_eco             2.82 -0.10     0.17 0.05
+\end{verbatim}
+
+\includegraphics{Analyse_files/figure-latex/unnamed-chunk-10-1.pdf}
+\includegraphics{Analyse_files/figure-latex/unnamed-chunk-10-2.pdf}
+
+\section{Inferenzstatistik}\label{inferenzstatistik}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Summierte Themenzuordnung}
+\NormalTok{datensatz <-}\StringTok{ }\NormalTok{datensatz }\OperatorTok{%>%}\StringTok{ }\NormalTok{rowwise }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{score =}\NormalTok{ head_}\DecValTok{1} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{2} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{3} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{4} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{5} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{6} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{7} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{8} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{9} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{10} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{11} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{12}\NormalTok{)}
+
+\NormalTok{datensatz <-}\StringTok{ }\NormalTok{datensatz }\OperatorTok{%>%}\StringTok{ }\NormalTok{rowwise }\OperatorTok{%>%}\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{score_c =}\NormalTok{ head_}\DecValTok{2} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{3} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{5} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{8} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{10} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{11} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{12}\NormalTok{)}
+
+\NormalTok{datensatz <-}\StringTok{ }\NormalTok{datensatz }\OperatorTok{%>%}\StringTok{ }\NormalTok{rowwise }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{score_nc =}\NormalTok{ head_}\DecValTok{1} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{4} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{6} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{7} \OperatorTok{+}\StringTok{ }\NormalTok{head_}\DecValTok{9}\NormalTok{)}
+
+
+
+\CommentTok{#H1: Es gibt einen Zusammenhang zwischen dem Alter und der Erkennung von Clickbait-Schlagzeilen.}
+
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{Age}\OperatorTok{+}\NormalTok{score)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  Age and score
+## t = 0.079007, df = 119, p-value = 0.9372
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.1714758  0.1854991
+## sample estimates:
+##         cor 
+## 0.007242374
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{Age}\OperatorTok{+}\NormalTok{score_c)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  Age and score_c
+## t = 0.59781, df = 119, p-value = 0.5511
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.1249985  0.2309596
+## sample estimates:
+##        cor 
+## 0.05471889
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data=}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{Age}\OperatorTok{+}\NormalTok{score_nc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  Age and score_nc
+## t = -0.51935, df = 119, p-value = 0.6045
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.2241491  0.1320623
+## sample estimates:
+##         cor 
+## -0.04755526
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#H2: Es gibt einen Unterschied zwischen Männern und Frauen in der Erkennung von Clickbait-Schlagzeilen.}
+
+\NormalTok{## Recoding datensatz$Gender into datensatz$Gender_rec}
+\NormalTok{datensatz}\OperatorTok{$}\NormalTok{Gender_rec <-}\StringTok{ }\KeywordTok{fct_recode}\NormalTok{(datensatz}\OperatorTok{$}\NormalTok{Gender,}
+               \StringTok{"Männlich"}\NormalTok{ =}\StringTok{ "Keine Angabe"}\NormalTok{)}
+
+\KeywordTok{t.test}\NormalTok{(datensatz}\OperatorTok{$}\NormalTok{score}\OperatorTok{~}\NormalTok{datensatz}\OperatorTok{$}\NormalTok{Gender_rec)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Welch Two Sample t-test
+## 
+## data:  datensatz$score by datensatz$Gender_rec
+## t = 0.68357, df = 112.36, p-value = 0.4957
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.4142097  0.8505733
+## sample estimates:
+## mean in group Männlich mean in group Weiblich 
+##               6.036364               5.818182
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{t.test}\NormalTok{(datensatz}\OperatorTok{$}\NormalTok{score_c}\OperatorTok{~}\NormalTok{datensatz}\OperatorTok{$}\NormalTok{Gender_rec)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Welch Two Sample t-test
+## 
+## data:  datensatz$score_c by datensatz$Gender_rec
+## t = -0.31701, df = 116.16, p-value = 0.7518
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.5710376  0.4134618
+## sample estimates:
+## mean in group Männlich mean in group Weiblich 
+##               2.163636               2.242424
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{t.test}\NormalTok{(datensatz}\OperatorTok{$}\NormalTok{score_nc}\OperatorTok{~}\NormalTok{datensatz}\OperatorTok{$}\NormalTok{Gender_rec)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Welch Two Sample t-test
+## 
+## data:  datensatz$score_nc by datensatz$Gender_rec
+## t = 1.269, df = 118.67, p-value = 0.2069
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -0.1664287  0.7603681
+## sample estimates:
+## mean in group Männlich mean in group Weiblich 
+##               3.872727               3.575758
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{describe}\NormalTok{(}\KeywordTok{filter}\NormalTok{ (datensatz, Gender_rec }\OperatorTok{==}\StringTok{ "Männlich"}\NormalTok{)}\OperatorTok{$}\NormalTok{score_c)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    vars  n mean   sd median trimmed  mad min max range skew kurtosis   se
+## X1    1 55 2.16 1.34      2    2.11 1.48   0   7     7 0.65      1.5 0.18
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{describe}\NormalTok{(}\KeywordTok{filter}\NormalTok{(datensatz, Gender_rec }\OperatorTok{==}\StringTok{ "Weiblich"}\NormalTok{)}\OperatorTok{$}\NormalTok{score_c)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    vars  n mean   sd median trimmed  mad min max range skew kurtosis   se
+## X1    1 66 2.24 1.38      2    2.22 1.48   0   7     7 0.39     0.56 0.17
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{corrMatrix}\NormalTok{(datensatz, }\DataTypeTok{vars =} \KeywordTok{c}\NormalTok{(}\StringTok{"Age"}\NormalTok{, }\StringTok{"bfio"}\NormalTok{, }\StringTok{"bfic"}\NormalTok{, }\StringTok{"bfie"}\NormalTok{, }\StringTok{"bfia"}\NormalTok{, }\StringTok{"bfin"}\NormalTok{, }\StringTok{"skills"}\NormalTok{, }\StringTok{"score"}\NormalTok{, }\StringTok{"score_nc"}\NormalTok{, }\StringTok{"score_c"}\NormalTok{), }\DataTypeTok{pearson =} \OtherTok{TRUE}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  CORRELATION MATRIX
+## 
+##  Correlation Matrix                                                                                                                 
+##  ---------------------------------------------------------------------------------------------------------------------------------- 
+##                               Age       bfio      bfic      bfie      bfia      bfin      skills    score     score_nc    score_c   
+##  ---------------------------------------------------------------------------------------------------------------------------------- 
+##    Age         Pearson's r         —                                                                                                
+##                p-value             —                                                                                                
+##                                                                                                                                     
+##    bfio        Pearson's r     0.012         —                                                                                      
+##                p-value         0.899         —                                                                                      
+##                                                                                                                                     
+##    bfic        Pearson's r     0.234     0.097         —                                                                            
+##                p-value         0.010     0.291         —                                                                            
+##                                                                                                                                     
+##    bfie        Pearson's r    -0.119     0.107     0.169         —                                                                  
+##                p-value         0.194     0.243     0.064         —                                                                  
+##                                                                                                                                     
+##    bfia        Pearson's r     0.037     0.144    -0.010     0.011         —                                                        
+##                p-value         0.683     0.116     0.913     0.904         —                                                        
+##                                                                                                                                     
+##    bfin        Pearson's r    -0.066     0.009    -0.097    -0.336    -0.023         —                                              
+##                p-value         0.475     0.920     0.291    < .001     0.804         —                                              
+##                                                                                                                                     
+##    skills      Pearson's r    -0.426     0.099     0.015     0.165     0.031    -0.216         —                                    
+##                p-value        < .001     0.280     0.867     0.070     0.736     0.017         —                                    
+##                                                                                                                                     
+##    score       Pearson's r     0.007    -0.135     0.088     0.099     0.028    -0.138     0.260         —                          
+##                p-value         0.937     0.139     0.339     0.281     0.764     0.133     0.004         —                          
+##                                                                                                                                     
+##    score_nc    Pearson's r    -0.048    -0.086     0.127     0.171     0.078    -0.079     0.224     0.632           —              
+##                p-value         0.604     0.349     0.166     0.061     0.397     0.387     0.014    < .001           —              
+##                                                                                                                                     
+##    score_c     Pearson's r     0.055    -0.090    -0.009    -0.037    -0.039    -0.100     0.118     0.671      -0.150          —   
+##                p-value         0.551     0.324     0.919     0.685     0.670     0.277     0.198    < .001       0.101          —   
+##  ----------------------------------------------------------------------------------------------------------------------------------
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#H3:Es gibt einen Zusammenhang zwischen den Fähigkeiten im Umgang mit Online-Medien/Technik (InternetSkillScale) und der Erkennung von Non-Clickbait-Schlagzeilen.}
+
+
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score_nc}\OperatorTok{+}\NormalTok{skills)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score_nc and skills
+## t = 2.5058, df = 119, p-value = 0.01357
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.04727055 0.38691301
+## sample estimates:
+##       cor 
+## 0.2238781
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score_c}\OperatorTok{+}\NormalTok{skills)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score_c and skills
+## t = 1.2934, df = 119, p-value = 0.1984
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.06205554  0.29014376
+## sample estimates:
+##       cor 
+## 0.1177452
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\StringTok{ }\NormalTok{score}\OperatorTok{+}\NormalTok{skills)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score and skills
+## t = 2.9381, df = 119, p-value = 0.003966
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.08554408 0.41911032
+## sample estimates:
+##       cor 
+## 0.2600695
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{##H4: Es gibt einen Zusammenhang zwischen den Persönlichkeitsfaktoren (BIG5) und der Erkennung von Clickbait-Schlagzeilen. }
+
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score_c }\OperatorTok{+}\StringTok{ }\NormalTok{bfio)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score_c and bfio
+## t = -0.99034, df = 119, p-value = 0.324
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.26463801  0.08952909
+## sample estimates:
+##         cor 
+## -0.09041228
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score_c }\OperatorTok{+}\StringTok{ }\NormalTok{bfic)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score_c and bfic
+## t = -0.10199, df = 119, p-value = 0.9189
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.1875325  0.1694303
+## sample estimates:
+##         cor 
+## -0.00934894
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score_c }\OperatorTok{+}\StringTok{ }\NormalTok{bfie)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score_c and bfie
+## t = -0.4071, df = 119, p-value = 0.6847
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.2143624  0.1421500
+## sample estimates:
+##         cor 
+## -0.03729275
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score_c }\OperatorTok{+}\StringTok{ }\NormalTok{bfia)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score_c and bfia
+## t = -0.4269, df = 119, p-value = 0.6702
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.2160924  0.1403722
+## sample estimates:
+##         cor 
+## -0.03910414
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score_c }\OperatorTok{+}\StringTok{ }\NormalTok{bfin)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score_c and bfin
+## t = -1.0925, df = 119, p-value = 0.2768
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.27328927  0.08027039
+## sample estimates:
+##         cor 
+## -0.09965398
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score_nc }\OperatorTok{+}\StringTok{ }\NormalTok{bfio)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score_nc and bfio
+## t = -0.94121, df = 119, p-value = 0.3485
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.26046109  0.09397749
+## sample estimates:
+##         cor 
+## -0.08596101
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score_nc }\OperatorTok{+}\StringTok{ }\NormalTok{bfic)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score_nc and bfic
+## t = 1.3928, df = 119, p-value = 0.1663
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.05304794  0.29839868
+## sample estimates:
+##       cor 
+## 0.1266478
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score_nc }\OperatorTok{+}\StringTok{ }\NormalTok{bfie)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score_nc and bfie
+## t = 1.8917, df = 119, p-value = 0.06097
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.00787869  0.33901550
+## sample estimates:
+##       cor 
+## 0.1708581
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score_nc }\OperatorTok{+}\StringTok{ }\NormalTok{bfia)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score_nc and bfia
+## t = 0.84916, df = 119, p-value = 0.3975
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.102306  0.252605
+## sample estimates:
+##        cor 
+## 0.07760776
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score_nc }\OperatorTok{+}\StringTok{ }\NormalTok{bfin)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score_nc and bfin
+## t = -0.86771, df = 119, p-value = 0.3873
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.2541917  0.1006279
+## sample estimates:
+##         cor 
+## -0.07929285
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score }\OperatorTok{+}\StringTok{ }\NormalTok{bfio)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score and bfio
+## t = -1.4895, df = 119, p-value = 0.139
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.30638109  0.04428295
+## sample estimates:
+##        cor 
+## -0.1352829
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score }\OperatorTok{+}\StringTok{ }\NormalTok{bfic)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score and bfic
+## t = 0.95921, df = 119, p-value = 0.3394
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.09234785  0.26199282
+## sample estimates:
+##        cor 
+## 0.08759254
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score }\OperatorTok{+}\StringTok{ }\NormalTok{bfie)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score and bfie
+## t = 1.0834, df = 119, p-value = 0.2808
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.08109999  0.27251643
+## sample estimates:
+##        cor 
+## 0.09882717
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score }\OperatorTok{+}\StringTok{ }\NormalTok{bfia)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score and bfia
+## t = 0.30031, df = 119, p-value = 0.7645
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.1517231  0.2050082
+## sample estimates:
+##        cor 
+## 0.02751871
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score }\OperatorTok{+}\StringTok{ }\NormalTok{bfin)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score and bfin
+## t = -1.5146, df = 119, p-value = 0.1325
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.30845266  0.04199943
+## sample estimates:
+##        cor 
+## -0.1375281
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{##H5: Es gibt einen Zusammenhang zwischen der richtigen Themenzuordnung und der Bewertung der Schlagzeilen.}
+
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score_c }\OperatorTok{+}\StringTok{ }\NormalTok{sd_c)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score_c and sd_c
+## t = 3.4928, df = 119, p-value = 0.0006717
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.1337185 0.4584782
+## sample estimates:
+##       cor 
+## 0.3049367
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score_nc }\OperatorTok{+}\StringTok{ }\NormalTok{sd_nc)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score_nc and sd_nc
+## t = -4.107, df = 119, p-value = 7.387e-05
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.4994316 -0.1855166
+## sample estimates:
+##        cor 
+## -0.3523455
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{cor.test}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ datensatz, }\OperatorTok{~}\NormalTok{score }\OperatorTok{+}\StringTok{ }\NormalTok{sd_all)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Pearson's product-moment correlation
+## 
+## data:  score and sd_all
+## t = 1.3987, df = 119, p-value = 0.1645
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  -0.0525149  0.2988855
+## sample estimates:
+##       cor 
+## 0.1271737
+\end{verbatim}
+
+\section{Visualisierungen}\label{visualisierungen}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Zu H1}
+
+\KeywordTok{ggscatter}\NormalTok{(datensatz, }\DataTypeTok{x =} \StringTok{"Age"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"score"}\NormalTok{, }
+          \DataTypeTok{add =} \StringTok{"reg.line"}\NormalTok{, }\DataTypeTok{conf.int =} \OtherTok{TRUE}\NormalTok{, }
+          \DataTypeTok{cor.coef =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{cor.method =} \StringTok{"pearson"}\NormalTok{,}
+          \DataTypeTok{xlab =} \StringTok{"Alter"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"Korrekte Themenzuordnung"}\NormalTok{, }\DataTypeTok{title =} \StringTok{"Es gibt keinen Zusammenhang zwischen der korrekten Themenzuordnung und }
+\StringTok{dem Alter."}\NormalTok{, }\DataTypeTok{caption =} \StringTok{"n = 119"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_jitter}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Analyse_files/figure-latex/Visualisierungen-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#ggsave("Zusammenhang_h1_gesamt.jpeg")}
+
+\KeywordTok{ggscatter}\NormalTok{(datensatz, }\DataTypeTok{x =} \StringTok{"Age"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"score"}\NormalTok{, }
+          \DataTypeTok{add =} \StringTok{"reg.line"}\NormalTok{, }\DataTypeTok{conf.int =} \OtherTok{TRUE}\NormalTok{, }
+          \DataTypeTok{cor.coef =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{cor.method =} \StringTok{"pearson"}\NormalTok{,}
+          \DataTypeTok{xlab =} \StringTok{"Alter"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"Korrekte Themenzuordnung zu C-Schlagzeilen"}\NormalTok{, }\DataTypeTok{title =} \StringTok{"Es gibt keinen signifikanten Zusammenhang zwischen dem Alter un der Erkennung von Clickbait-Schlagzeilen."}\NormalTok{, }\DataTypeTok{caption =} \StringTok{"n = 119"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_jitter}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Analyse_files/figure-latex/Visualisierungen-2.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#ggsave("Kein Zusammenhang Age Clickbait H1.jpeg")}
+
+\CommentTok{#Zu H2}
+
+\KeywordTok{ggplot}\NormalTok{(datensatz) }\OperatorTok{+}
+\StringTok{ }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ Gender_rec, }\DataTypeTok{y =}\NormalTok{ score) }\OperatorTok{+}
+\StringTok{ }\KeywordTok{geom_boxplot}\NormalTok{(}\DataTypeTok{fill =} \StringTok{"#0c4c8a"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{ (}\DataTypeTok{x =} \StringTok{"Geschlecht"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Korrekte Themenzuordnung"}\NormalTok{, }\DataTypeTok{title =} \StringTok{"Es gibt keinen Unterschied in der korrekten Themenzuordnung zwischen }
+\StringTok{Männern und Frauen."}\NormalTok{, }\DataTypeTok{caption =} \StringTok{"n = 121"}\NormalTok{)}\OperatorTok{+}
+\StringTok{ }\KeywordTok{theme_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Analyse_files/figure-latex/Visualisierungen-3.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#ggsave("Unterschied_h2.jpeg")}
+
+\CommentTok{#Zu H3}
+
+\KeywordTok{ggscatter}\NormalTok{(datensatz, }\DataTypeTok{x =} \StringTok{"skills"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"score"}\NormalTok{, }
+          \DataTypeTok{add =} \StringTok{"reg.line"}\NormalTok{, }\DataTypeTok{conf.int =} \OtherTok{TRUE}\NormalTok{, }
+          \DataTypeTok{cor.coef =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{cor.method =} \StringTok{"pearson"}\NormalTok{,}
+          \DataTypeTok{xlab =} \StringTok{"Internetskills"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"Richtige Themenzuordnung zur Schlagzeile"}\NormalTok{, }\DataTypeTok{caption =} \StringTok{"n =119"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_jitter}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Analyse_files/figure-latex/Visualisierungen-4.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+ \KeywordTok{ggsave}\NormalTok{(}\StringTok{"Zusammenhang Scores gesamt und Skills.jpeg"}\NormalTok{, }\DataTypeTok{width =} \DecValTok{8}\NormalTok{, }\DataTypeTok{height =} \DecValTok{6}\NormalTok{)}
+ 
+\KeywordTok{ggscatter}\NormalTok{(datensatz, }\DataTypeTok{x =} \StringTok{"skills"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"score_nc"}\NormalTok{, }
+          \DataTypeTok{add =} \StringTok{"reg.line"}\NormalTok{, }\DataTypeTok{conf.int =} \OtherTok{TRUE}\NormalTok{, }
+          \DataTypeTok{cor.coef =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{cor.method =} \StringTok{"pearson"}\NormalTok{,}
+          \DataTypeTok{xlab =} \StringTok{"Internetskills"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"Richtige Themenzuordnung zu NC-Schlagzeilen"}\NormalTok{, }\DataTypeTok{caption =} \StringTok{"n =119"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_jitter}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Analyse_files/figure-latex/Visualisierungen-5.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# ggsave("Zusammenhang Scores NC und Skills.jpeg", width = 8, height = 6)}
+
+
+\CommentTok{#Zu H5}
+\KeywordTok{ggscatter}\NormalTok{(datensatz, }\DataTypeTok{x =} \StringTok{"score_nc"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"sd_nc"}\NormalTok{, }
+          \DataTypeTok{add =} \StringTok{"reg.line"}\NormalTok{, }\DataTypeTok{conf.int =} \OtherTok{TRUE}\NormalTok{, }
+          \DataTypeTok{cor.coef =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{cor.method =} \StringTok{"pearson"}\NormalTok{,}
+          \DataTypeTok{xlab =} \StringTok{"Themenzuordnung Non-Clickbait"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"Bewertung Non-Clickbait (1 = positiv, 5 = negativ)"}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_jitter}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Analyse_files/figure-latex/Visualisierungen-6.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#ggsave("Zusammenhang_h5_Non-Clickbait.jpeg", width = 8, height = 6)}
+
+\KeywordTok{ggscatter}\NormalTok{(datensatz, }\DataTypeTok{x =} \StringTok{"score_c"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"sd_c"}\NormalTok{, }
+          \DataTypeTok{add =} \StringTok{"reg.line"}\NormalTok{, }\DataTypeTok{conf.int =} \OtherTok{TRUE}\NormalTok{, }
+          \DataTypeTok{cor.coef =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{cor.method =} \StringTok{"pearson"}\NormalTok{,}
+          \DataTypeTok{xlab =} \StringTok{"Themenzuordnung Clickbait"}\NormalTok{, }\DataTypeTok{ylab =} \StringTok{"Bewertung Clickbait (1 = positiv, 5 = negativ)"}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_jitter}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Analyse_files/figure-latex/Visualisierungen-7.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#ggsave("Zusammenhang_h5_Clickbait.jpeg", width = 8, height = 6)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{Ergebnisse}\label{ergebnisse}
+
+\subsection{Zusammenhangshypothese 1}\label{zusammenhangshypothese-1}
+
+Es besteht kein signifikanter Zusammenhang zwischen dem Alter und der
+Erkennung von Clickbait-Schlagzeilen (r = (121) =.05, p = .55). Das
+Alter der Probanden steht demnach nicht in Zusammenhang mit der
+korrekten Zuordnung der Themeninhalte durch die Probanden.
+
+\subsection{Unterschiedshypothese 2}\label{unterschiedshypothese-2}
+
+In der Stichprobe konnte kein signifikanter Unterschied zwischen Männern
+und Frauen in der Erkennung von Clickbait-Schlagzeilen (t (116.16) =
+-.32, p = .75) oder Non-Clickbait-Schlagzeilen festgestellt werden (t
+(118.67) = 1.27, p = .21).
+
+\subsection{Zusammenhangshypothese 3}\label{zusammenhangshypothese-3}
+
+Es besteht ein signifikanter, schwach positiver Zusammenhang zwischen
+den Fähigkeiten im Umgang mit Online-Medien und Technik (ISS) und der
+Erkennung von Non-Clickbait-Schlagzeilen (r(121) = .22, p = .01). Der
+Korrelationskoeffizient liegt mit 95-prozentiger Sicherheit zwischen
+0.04 und 0.39. Personen, die geübter im Umgang mit Online-Medien und
+Technik sind, ordnen den Non-Clickbait-Schlagzeilen demnach eher den
+richtigen Themeninhalt zu. Ebenso kann dieser Zusammenhang in Bezug auf
+die kumulierte Bewertung aller Schlagzeilen festgestellt werden (r (121)
+= .26, p = .004). Je höher die Fähigkeiten im Umgang mit Online-Medien
+und Technik sind, desto eher ordnen die Probanden den gesamten
+Schlagzeilen den richtigen Themeninhalt zu.
+
+\subsection{Zusammenhangshypothese 4}\label{zusammenhangshypothese-4}
+
+Es besteht kein signifikanter Zusammenhang zwischen den
+Persönlihckeitsfaktoren nach Big 5 und der Erkennung von
+Clickbait-Schlagzeilen. Die einzelnen Persönlichkeitsfaktoren Offenheit
+(r (119) = -.09 p = .32), Gewissenhaftigkeit (r (119) = -.01, p = .92),
+Extraversion (r (119) = -.04, p = .68), Verträglichkeit (r (119) = -.04,
+p = .67) und Neurotizismus (r (119) = -.1, p = .28) korrelieren nicht,
+bis maximal sehr schwach, allerdings nicht signifikant mit der Erkennung
+von Clickbait-Schlagzeilen.
+
+\subsection{Zusammenhangsyhypothese 5}\label{zusammenhangsyhypothese-5}
+
+Die Ergebnisse zeigen, dass sowohl zwischen der richtigen
+Themenzuordnung und der Bewertung der Non-Clickbait-Schlagzeilen (r
+(119) = -.35, p \textless{}.001) als auch zwischen der richtigen
+Themenzuordnung und der Bewertung von Clickbait-Schlagzeilen (r (119) =
+.30, p \textless{}.001) ein signifikanter Zusammenhang besteht.
+Bezüglich der Non-Clickbait-Schlagzeilen ist ein negativer Zusammenhang
+festzustellen. Je positiver die Schlagzeilen bewertet werden, desto eher
+ordnen die Probanden ebendiesen den richtigen Themeninhalt zu.
+Auffälliger sind allerdings die Ergebnisse der Clickbait-Schlagzeilen.
+Dabei ist ein positiver Zusammenhang festzustellen. Je negativer die
+Clickbait-Schlagzeilen bewertet werden, desto eher ordnen die Probanden
+den Schlagzeilen den richtigen Themeninhalt zu.
+
+\section{Weiterführende
+Untersuchungen}\label{weiterfuhrende-untersuchungen}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{mean}\NormalTok{(datensatz}\OperatorTok{$}\NormalTok{AnteilClickbait_}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 7.330579
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{sd}\NormalTok{(datensatz}\OperatorTok{$}\NormalTok{AnteilClickbait_}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 1.624748
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(datensatz) }\OperatorTok{+}
+\StringTok{ }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ AnteilClickbait_}\DecValTok{1}\NormalTok{) }\OperatorTok{+}
+\StringTok{ }\KeywordTok{geom_histogram}\NormalTok{(}\DataTypeTok{bins =}\NormalTok{ 30L, }\DataTypeTok{fill =} \StringTok{"#0c4c8a"}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{( }\DataTypeTok{x =} \StringTok{"Geschätzter Anteil an Clickbait-Schlagzeilen"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Anzahl an Probanden"}\NormalTok{, }\DataTypeTok{title =} \StringTok{"Der Großteil der Stichprobe glaubt, dass 7-8 Clickbait-Schlagzeilen vorhanden }
+\StringTok{waren. (M = 7.3, SD = 1.6)"}\NormalTok{, }\DataTypeTok{caption =} \StringTok{"n= 121"}\NormalTok{)}\OperatorTok{+}
+\StringTok{ }\KeywordTok{theme_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Analyse_files/figure-latex/unnamed-chunk-11-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#ggsave("Grafik Anteil Clickbait.jpeg")}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{}\label{section}
+
+
+\end{document}
