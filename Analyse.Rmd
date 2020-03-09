@@ -898,7 +898,14 @@ datensatz <- datensatz %>%
 #Deskriptive Statistik
 ```{r Deskriptive Statistik, echo=FALSE, warning=FALSE}
 
-
+  
+ggplot + 
+  aes(x = name, y=value, color = clickbait)+
+   labs (x= "Schlagzeile", y = "Antwort", title = "Verhältnis zwischen richtigen und falschen Antworten der Probanden", caption = "n = 121")+
+  aes(x = name, y=value, color = nonclickbait)+
+   labs (x= "Schlagzeile", y = "Antwort", title = "Verhältnis zwischen richtigen und falschen Antworten der Probanden", color = "Clickbait- und Non-Clickbait-Schlagzeilen", caption = "n = 121")+
+  theme_bw()+
+  geom_jitter()
 
 describe(datensatz)
 
@@ -1007,6 +1014,9 @@ cor.test(data = datensatz, ~score_c + sd_c)
 cor.test(data = datensatz, ~score_nc + sd_nc)
 cor.test(data = datensatz, ~score + sd_all)
 
+
+
+cor.test(data = datensatz, ~bfin + skills)
 
 
 ```
@@ -1119,4 +1129,39 @@ waren. (M = 7.3, SD = 1.6)", caption = "n= 121")+
  theme_minimal()
 
 #ggsave("Grafik Anteil Clickbait.jpeg")
+
+#Antworten der Probanden
+
+colnames(datensatz)[which(names(datensatz) == "head_1")] <- "01" 
+colnames(datensatz)[which(names(datensatz) == "head_2")] <- "02" 
+colnames(datensatz)[which(names(datensatz) == "head_3")] <- "03"  
+colnames(datensatz)[which(names(datensatz) == "head_4")] <- "04"  
+colnames(datensatz)[which(names(datensatz) == "head_5")] <- "05" 
+colnames(datensatz)[which(names(datensatz) == "head_6")] <- "06" 
+colnames(datensatz)[which(names(datensatz) == "head_7")] <- "07"  
+colnames(datensatz)[which(names(datensatz) == "head_8")] <- "08" 
+colnames(datensatz)[which(names(datensatz) == "head_9")] <- "09"  
+colnames(datensatz)[which(names(datensatz) == "head_10")] <- "10"  
+colnames(datensatz)[which(names(datensatz) == "head_11")] <- "11" 
+colnames(datensatz)[which(names(datensatz) == "head_12")] <- "12"  
+datensatz %>% 
+  pivot_longer(cols = c("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12")) %>% 
+  mutate(nonclickbait = case_when(name == "01" ~ TRUE,
+                              name == "04" ~ TRUE,
+                              name =="06"~ TRUE,
+                              name == "07" ~ TRUE,
+                              name == "09" ~ TRUE,
+                              TRUE ~ FALSE)) %>% 
+  ggplot + 
+  aes(x = name, y=value, color = nonclickbait)+
+   labs (x= "Schlagzeile", y = "Antwort", title = "Verhältnis zwischen richtigen und falschen Antworten der Probanden", color = "Clickbait- und Non-Clickbait-Schlagzeilen", caption = "n = 121")+
+  theme_bw()+
+  geom_jitter()
+
+ggsave("Antworten der Probanden.jpeg", width = 12, height = 6)
+
+ggplot(datensatz) +
+ aes(x = Ausbildung, y = score) +
+ geom_boxplot(fill = "#0c4c8a") +
+ theme_minimal()
 ```
