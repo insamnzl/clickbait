@@ -877,7 +877,7 @@ ggplot()+
                                          labels = labelsrechts))+
   labs (title = "Clickbait- und Non-Clickbait-Schlagzeilen aus dem Themengebiet 
 Wirtschaft werden gleich bewertet.",
-        caption = "n = 123",
+        caption = "n = 121",
         subtitle = "Semantisches Differenzial zu der Bewertung von Online-Schlagzeilen ")+
   coord_flip()
 #ggsave("Semantisches Differenzial Wirtschaft.jpeg")
@@ -899,7 +899,7 @@ datensatz <- datensatz %>%
 ```{r Deskriptive Statistik, echo=FALSE, warning=FALSE}
 
   
-ggplot + 
+#ggplot + 
   aes(x = name, y=value, color = clickbait)+
    labs (x= "Schlagzeile", y = "Antwort", title = "Verhältnis zwischen richtigen und falschen Antworten der Probanden", caption = "n = 121")+
   aes(x = name, y=value, color = nonclickbait)+
@@ -936,6 +936,8 @@ einen Studienabschluss.", caption = "n = 121")+
 
 
 
+
+
 ```
 
 #Inferenzstatistik
@@ -948,7 +950,6 @@ datensatz <- datensatz %>% rowwise %>% mutate(score = head_1 + head_2 + head_3 +
 datensatz <- datensatz %>% rowwise %>%  mutate(score_c = head_2 + head_3 + head_5 + head_8 + head_10 + head_11 + head_12)
 
 datensatz <- datensatz %>% rowwise %>% mutate(score_nc = head_1 + head_4 + head_6 + head_7 + head_9)
-
 
 
 #H1: Es gibt einen Zusammenhang zwischen dem Alter und der Erkennung von Clickbait-Schlagzeilen.
@@ -1014,11 +1015,6 @@ cor.test(data = datensatz, ~score_c + sd_c)
 cor.test(data = datensatz, ~score_nc + sd_nc)
 cor.test(data = datensatz, ~score + sd_all)
 
-
-
-cor.test(data = datensatz, ~bfin + skills)
-
-
 ```
 #Visualisierungen
 ```{r Visualisierungen, echo=FALSE}
@@ -1068,12 +1064,14 @@ korrekten Themenzuordnung.") +
 ggscatter(datensatz, x = "skills", y = "score_nc", 
           add = "reg.line", conf.int = TRUE, 
           cor.coef = TRUE, cor.method = "pearson",
-          xlab = "Internetskills (1 = niedrig, 6 = hoch)", ylab = "Richtige Themenzuordnung zu NC-Schlagzeilen", caption = "n =119", title = "Es besteht ein signifikanter Zusammenhang zwischen den Fähigkeiten 
+          xlab = "Internetskills (1 = niedrig, 6 = hoch)", ylab = "Richtige Themenzuordnung zu NC-Schlagzeilen", caption = "n =119
+Note: *p < .05, **p < .01, ***p < .001", title = "Es besteht ein signifikanter Zusammenhang zwischen den Fähigkeiten 
 im Umgang mit Online-Medien und Technik und der Erkennung 
 von Non-Clickbait-Schlagzeilen.") +
   geom_jitter()
  
-#ggsave("Zusammenhang Scores NC und Skills.jpeg", width = 8, height = 6)
+
+ggsave("Zusammenhang Scores NC und Skills.jpeg", width = 8, height = 6)
 
 
 #Zu H5
@@ -1120,6 +1118,8 @@ Die Ergebnisse zeigen, dass sowohl zwischen der richtigen Themenzuordnung und de
 mean(datensatz$AnteilClickbait_1)
 sd(datensatz$AnteilClickbait_1)
 
+cor.test(data = datensatz, ~bfin + skills)
+
 
 ggplot(datensatz) +
  aes(x = AnteilClickbait_1) +
@@ -1158,7 +1158,7 @@ datensatz %>%
   theme_bw()+
   geom_jitter()
 
-ggsave("Antworten der Probanden.jpeg", width = 12, height = 6)
+#ggsave("Antworten der Probanden.jpeg", width = 12, height = 6)
 
 ggplot(datensatz) +
  aes(x = Ausbildung, y = score) +
